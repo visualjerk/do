@@ -27,15 +27,20 @@ function handleDelete(todo: Todo) {
 
 <template>
   <div>
-    <h1 class="mb-8">Do</h1>
-    <form @submit.prevent="addTodo" class="flex gap-2 mb-6">
+    <h1 class="mb-8">Todos</h1>
+    <form @submit.prevent="addTodo" class="mb-6 relative">
       <input
         v-model="newTodo.name"
         placeholder="What needs to be done?"
         autofocus
-        class="p-3 flex-grow text-lg"
+        class="p-3 pr-10 w-full text-lg focus:outline-indigo-500"
       />
-      <ActionButton type="submit">Add</ActionButton>
+      <button
+        type="submit"
+        class="absolute inset-y-0 right-0 px-3 text-indigo-600"
+      >
+        <mdicon name="plus" />
+      </button>
     </form>
     <ul v-auto-animate>
       <li v-for="todo in todos" :key="todo.id" class="mt-2 first-of-type:mt-0">
