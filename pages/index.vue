@@ -7,11 +7,8 @@ import {
   Todo,
 } from '@/store/todos'
 
-const { todos, getTodos, subscribe } = useTodos()
+const { todos } = await useTodos(true)
 const { newTodo, addTodo } = useTodoForm()
-
-getTodos()
-subscribe()
 
 useHead({
   title: 'Do',

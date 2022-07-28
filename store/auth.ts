@@ -1,46 +1,26 @@
-import { getApi } from '@/store/api'
-
 interface User {
   avatarUrl: string
 }
 
 export function useUser() {
-  const user = useState<User | null>('USER')
-
-  function getUser() {
-    const api = getApi()
-    if (!api) {
-      return
-    }
-    const apiUser = api.auth.user()
-    if (!apiUser) {
-      user.value = null
-      return
+  const supabaseUser = useSupabaseUser()
+  const user = computed<User | null>(() => {
+    if (!supabaseUser.value) {
+      return null
     }
 
-    const identity = apiUser.identities?.at(0)
+    const identity = supabaseUser.value.identities?.at(0)
 
-    user.value = {
+    return {
       avatarUrl: (identity?.identity_data.avatar_url as string) || '',
     }
-  }
+  })
 
-  function subscribe() {
-    const api = getApi()
-    if (!api) {
-      return
-    }
-    api.auth.onAuthStateChange(getUser)
-  }
-
-  return { user, getUser, subscribe }
+  return { user }
 }
 
 export async function login() {
-  const api = getApi()
-  if (!api) {
-    return
-  }
+  const api = useSupabaseClient()
   const appUrl = useRuntimeConfig().app.baseURL
   await api.auth.signIn(
     {
@@ -53,10 +33,7 @@ export async function login() {
 }
 
 export async function logout() {
-  const api = getApi()
-  if (!api) {
-    return
-  }
+  const api = useSupabaseClient()
   await api.auth.signOut()
   await refreshNuxtData()
   useRouter().push('/')

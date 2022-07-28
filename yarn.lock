@@ -419,7 +419,7 @@
     unimport "^0.1.6"
     untyped "^0.4.4"
 
-"@nuxt/kit@^3.0.0-rc.6":
+"@nuxt/kit@^3.0.0-rc.5", "@nuxt/kit@^3.0.0-rc.6":
   version "3.0.0-rc.6"
   resolved "https://registry.yarnpkg.com/@nuxt/kit/-/kit-3.0.0-rc.6.tgz#b59c10639cb591bdc5a63164fb352b344230a065"
   integrity sha512-+lxSd6dSWlAzMXfGOPcY4856xnMF1Ck1rycFUZ+K2QYiDXphq/fiW2eMaWLVvqgPyL2Box2WzVDZJ6C5ceptcw==
@@ -526,6 +526,16 @@
     vite "^2.9.14"
     vite-node "^0.18.1"
     vite-plugin-checker "^0.4.9"
+
+"@nuxtjs/supabase@^0.1.19":
+  version "0.1.19"
+  resolved "https://registry.yarnpkg.com/@nuxtjs/supabase/-/supabase-0.1.19.tgz#763e9280505565481db280681f32fa837cc79a55"
+  integrity sha512-ntAxxscRblW9NK86U9sabrDVZ2mH9WkmV0p+ej+lpywWudWL4GaSji60YWj4lxckxS8H8ihHTALsIznSjyrBoQ==
+  dependencies:
+    "@nuxt/kit" "^3.0.0-rc.5"
+    "@supabase/supabase-js" "^1.35.4"
+    defu "^6.0.0"
+    pathe "^0.3.2"
 
 "@rollup/plugin-alias@^3.1.9":
   version "3.1.9"

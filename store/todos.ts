@@ -1,5 +1,5 @@
-import { getApi } from '@/store/api'
 import { definitions } from '@/types/supabase'
+import type { RealtimeSubscription } from '@supabase/supabase-js'
 
 export interface Todo {
   id: number
@@ -7,54 +7,51 @@ export interface Todo {
   done: boolean
 }
 
-export function useTodos() {
-  const todos = useState<Todo[]>('TODOS', () => [])
+export async function useTodos(subscribe = false) {
+  const api = useSupabaseClient()
+  let subscription: RealtimeSubscription | undefined
 
-  async function getTodos() {
-    const api = getApi()
-    if (!api) {
-      return
-    }
-    const apiTodos = await api
+  if (subscribe && process.client) {
+    onUnmounted(() => {
+      if (subscription) {
+        api.removeSubscription(subscription)
+      }
+    })
+  }
+
+  const { data: todos, refresh } = await useAsyncData('todos', async () => {
+    const { data } = await api
       .from<definitions['todo']>('todo')
       .select('*')
       .order('id')
-    if (!apiTodos.data) {
-      todos.value = []
-      return
-    }
 
-    todos.value = apiTodos.data.map((todo) => ({
+    if (!data) {
+      return []
+    }
+    return data.map((todo) => ({
       id: todo.id,
       name: todo.name,
       done: todo.done,
     }))
-  }
+  })
 
-  function subscribe() {
-    const api = getApi()
-    if (!api) {
-      return
-    }
-    api
+  if (subscribe && process.client) {
+    subscription = api
       .from('todo')
       .on('*', () => {
-        getTodos()
+        refresh()
       })
       .subscribe()
   }
 
-  return { todos, getTodos, subscribe }
+  return { todos }
 }
 
 export function useTodoForm() {
   const newTodo = ref({ name: '' })
 
   async function addTodo() {
-    const api = getApi()
-    if (!api) {
-      return
-    }
+    const api = useSupabaseClient()
     const user = api.auth.user()
     if (!user) {
       return
@@ -72,12 +69,9 @@ export function useTodoForm() {
 }
 
 export async function toggleTodo(todo: Todo) {
-  const api = getApi()
-  if (!api) {
-    return
-  }
+  const api = useSupabaseClient()
   const { done } = todo
-  const { todos } = useTodos()
+  const { todos } = await useTodos()
   const index = todos.value.findIndex(({ id }) => id === todo.id)
   todos.value[index].done = !done
 
@@ -91,12 +85,9 @@ export async function toggleTodo(todo: Todo) {
 }
 
 export async function deleteTodo(todo: Todo) {
-  const api = getApi()
-  if (!api) {
-    return
-  }
+  const api = useSupabaseClient()
   const { id: oldId } = todo
-  const { todos } = useTodos()
+  const { todos } = await useTodos()
   const index = todos.value.findIndex(({ id }) => id === oldId)
   todos.value.splice(index, 1)
 
