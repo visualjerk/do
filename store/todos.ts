@@ -76,9 +76,14 @@ export async function toggleTodo(todo: Todo) {
   if (!api) {
     return
   }
+  const { done } = todo
+  const { todos } = useTodos()
+  const index = todos.value.findIndex(({ id }) => id === todo.id)
+  todos.value[index].done = !done
+
   const { error } = await api
     .from<definitions['todo']>('todo')
-    .update({ done: !todo.done })
+    .update({ done: !done })
     .eq('id', todo.id)
   if (error) {
     console.error(error)

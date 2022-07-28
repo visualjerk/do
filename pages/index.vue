@@ -26,15 +26,31 @@ useHead({
     </form>
     <ul class="grid gap-2">
       <li v-for="todo in todos">
-        <label class="flex gap-2 p-2 bg-slate-50 shadow-sm">
-          <input
-            type="checkbox"
-            :checked="todo.done"
-            class="w-6 h-6"
-            @change="() => toggleTodo(todo)"
-          />
-          {{ todo.name }}
-        </label>
+        <div>
+          <label
+            class="flex gap-3 p-3 bg-slate-50 shadow-sm"
+            :class="todo.done ? 'text-slate-300' : 'text-slate-700'"
+          >
+            <input
+              type="checkbox"
+              :checked="todo.done"
+              class="hidden"
+              @change="() => toggleTodo(todo)"
+            />
+            <div
+              class="w-6 h-6 flex items-center justify-center border-2 border-slate-300"
+              :class="todo.done ? 'bg-slate-300' : ''"
+            >
+              <mdicon
+                v-if="todo.done"
+                name="check"
+                class="text-white"
+                size="20"
+              />
+            </div>
+            {{ todo.name }}
+          </label>
+        </div>
       </li>
     </ul>
   </div>
