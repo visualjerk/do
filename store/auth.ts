@@ -41,9 +41,15 @@ export async function login() {
   if (!api) {
     return
   }
-  await api.auth.signIn({
-    provider: 'github',
-  })
+  const appUrl = useRuntimeConfig().app.baseURL
+  await api.auth.signIn(
+    {
+      provider: 'github',
+    },
+    {
+      redirectTo: appUrl,
+    }
+  )
 }
 
 export async function logout() {
