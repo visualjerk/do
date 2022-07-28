@@ -20,6 +20,7 @@ export interface paths {
           created_at?: parameters["rowFilter.todo.created_at"];
           name?: parameters["rowFilter.todo.name"];
           user_id?: parameters["rowFilter.todo.user_id"];
+          done?: parameters["rowFilter.todo.done"];
           /** Filtering Columns */
           select?: parameters["select"];
           /** Ordering */
@@ -74,6 +75,7 @@ export interface paths {
           created_at?: parameters["rowFilter.todo.created_at"];
           name?: parameters["rowFilter.todo.name"];
           user_id?: parameters["rowFilter.todo.user_id"];
+          done?: parameters["rowFilter.todo.done"];
         };
         header: {
           /** Preference */
@@ -92,6 +94,7 @@ export interface paths {
           created_at?: parameters["rowFilter.todo.created_at"];
           name?: parameters["rowFilter.todo.name"];
           user_id?: parameters["rowFilter.todo.user_id"];
+          done?: parameters["rowFilter.todo.done"];
         };
         body: {
           /** todo */
@@ -127,6 +130,11 @@ export interface definitions {
     name: string;
     /** Format: uuid */
     user_id: string;
+    /**
+     * Format: boolean
+     * @default false
+     */
+    done: boolean;
   };
 }
 
@@ -173,6 +181,8 @@ export interface parameters {
   "rowFilter.todo.name": string;
   /** Format: uuid */
   "rowFilter.todo.user_id": string;
+  /** Format: boolean */
+  "rowFilter.todo.done": string;
 }
 
 export interface operations {}

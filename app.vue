@@ -18,13 +18,15 @@ useHead({
     >
       <NuxtLink to="/" class="text-slate-800">Do</NuxtLink>
       <nav class="flex items-center justify-end gap-2">
-        <ActionButton @click="login" v-if="!user">
-          Login with GitHub
-        </ActionButton>
-        <ActionButton @click="logout" v-else>
-          <img :src="user.avatarUrl" class="rounded-full h-5 w-5 mr-2 border" />
-          Logout
-        </ActionButton>
+        <ClientOnly>
+          <ActionButton @click="logout" v-if="user">
+            <img
+              :src="user.avatarUrl"
+              class="rounded-full h-5 w-5 mr-2 border"
+            />
+            Logout
+          </ActionButton>
+        </ClientOnly>
         <a
           href="https://github.com/visualjerk/do"
           class="flex px-2 py-1 text-slate-600 hover:text-slate-800"
@@ -37,7 +39,15 @@ useHead({
     </header>
 
     <main class="py-6 sm:py-10 px-4 max-w-screen-md m-auto">
-      <NuxtPage />
+      <ClientOnly>
+        <div v-if="!user">
+          <h1 class="mb-8">Please login</h1>
+          <ActionButton @click="login" v-if="!user">
+            Login with GitHub
+          </ActionButton>
+        </div>
+        <NuxtPage v-else />
+      </ClientOnly>
     </main>
     <footer class="p-8 flex justify-center items-center gap-1 text-slate-500">
       Built by
