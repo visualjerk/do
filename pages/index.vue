@@ -28,8 +28,12 @@ useHead({
       <li v-for="todo in todos">
         <div>
           <label
-            class="flex gap-3 p-3 bg-slate-50 shadow-sm"
-            :class="todo.done ? 'text-slate-300' : 'text-slate-700'"
+            class="flex gap-3 p-3 shadow-sm"
+            :class="
+              todo.done
+                ? 'text-slate-300 bg-slate-50'
+                : 'text-slate-700 bg-white'
+            "
           >
             <input
               type="checkbox"
