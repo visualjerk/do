@@ -8,6 +8,7 @@
     "generate-api-types": "source .env && npx openapi-typescript \"${NUXT_PUBLIC_SUPABASE_URL}/rest/v1/?apikey=${NUXT_PUBLIC_SUPABASE_KEY}\" --output types/supabase.ts"
   },
   "devDependencies": {
+    "@kevinmarrec/nuxt-pwa": "^0.4.2",
     "nuxt": "3.0.0-rc.6",
     "tailwindcss": "^3.1.6"
   },

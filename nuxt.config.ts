@@ -18,4 +18,5 @@ export default defineNuxtConfig({
   typescript: {
     strict: true,
   },
+  modules: ['@kevinmarrec/nuxt-pwa'],
 })
