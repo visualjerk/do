@@ -37,22 +37,20 @@ function handleDelete(todo: Todo) {
       />
       <button
         type="submit"
-        class="absolute inset-y-0 right-0 px-3 text-indigo-600"
+        class="absolute inset-y-0 right-0 px-3 text-indigo-600 hover:text-indigo-800"
       >
         <mdicon name="plus" />
       </button>
     </form>
     <ul v-auto-animate>
       <li v-for="todo in todos" :key="todo.id" class="mt-2 first-of-type:mt-0">
-        <div class="flex gap-3">
-          <label
-            class="flex flex-grow gap-3 p-3 shadow-sm"
-            :class="
-              todo.done
-                ? 'text-slate-300 bg-slate-50'
-                : 'text-slate-700 bg-white'
-            "
-          >
+        <div
+          class="flex gap-3 shadow-sm"
+          :class="
+            todo.done ? 'text-slate-300 bg-slate-50' : 'text-slate-700 bg-white'
+          "
+        >
+          <label class="flex flex-grow gap-3 p-3">
             <input
               type="checkbox"
               :checked="todo.done"
@@ -72,12 +70,11 @@ function handleDelete(todo: Todo) {
             </div>
             {{ todo.name }}
           </label>
-          <button @click="() => handleDelete(todo)" class="flex-shrink-0">
-            <mdicon
-              name="delete"
-              class="text-slate-400 hover:text-red-600"
-              size="20"
-            />
+          <button
+            class="flex-shrink-0 px-3 text-slate-400 hover:text-indigo-600"
+            @click="() => handleDelete(todo)"
+          >
+            <mdicon name="delete" size="20" />
           </button>
         </div>
       </li>

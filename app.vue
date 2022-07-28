@@ -9,7 +9,9 @@ useHead({
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-zink-100 to-blue-100">
+  <div
+    class="min-h-screen bg-gradient-to-br from-zink-100 to-blue-100 relative pb-20"
+  >
     <header
       class="flex items-center gap-3 p-2 justify-between sticky top-0 z-10 bg-slate-50 border-b border-slate-200"
     >
@@ -32,13 +34,16 @@ useHead({
         </svg>
       </NuxtLink>
       <nav class="flex items-center justify-end gap-2">
-        <ActionButton @click="logout" v-if="user">
-          <img :src="user.avatarUrl" class="rounded-full h-5 w-5 mr-2 border" />
-          Logout
-        </ActionButton>
+        <button
+          @click="logout"
+          v-if="user"
+          class="px-2 py-1 text-slate-700 hover:text-indigo-600"
+        >
+          <mdicon name="power" />
+        </button>
         <a
           href="https://github.com/visualjerk/do"
-          class="flex px-2 py-1 text-slate-600 hover:text-slate-800"
+          class="px-2 py-1 text-slate-700 hover:text-indigo-600"
           title="Open GitHub Repo"
           target="_blank"
         >
@@ -46,17 +51,23 @@ useHead({
         </a>
       </nav>
     </header>
-
     <main class="py-6 sm:py-10 px-2 sm:px-4 max-w-screen-md m-auto">
       <div v-if="!user">
         <h1 class="mb-8">Please login</h1>
-        <ActionButton @click="login" v-if="!user">
+        <button
+          @click="login"
+          v-if="!user"
+          class="flex gap-3 items-center py-8 bg-white text-slate-700 text-lg hover:text-indigo-600 w-full justify-center"
+        >
+          <mdicon name="github" size="30" />
           Login with GitHub
-        </ActionButton>
+        </button>
       </div>
       <NuxtPage v-else />
     </main>
-    <footer class="p-8 flex justify-center items-center gap-1 text-slate-500">
+    <footer
+      class="absolute inset-x-0 bottom-0 p-8 flex justify-center items-center gap-1 text-slate-500 text-xs"
+    >
       Built by
       <a
         href="https://twitter.com/visual_jerk"
