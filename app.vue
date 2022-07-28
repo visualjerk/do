@@ -1,14 +1,10 @@
 <script lang="ts" setup>
 import { useUser, login, logout } from '@/store/auth'
-import type { GithubUser } from '@/server/trpc/context'
 
-const { pending, data } = await useUser()
+const { user, getUser, subscribe } = await useUser()
 
-// Hopefully there is a better way to do this
-// Looks like nuxt-trpc infers the type incorrectly
-const user = computed<GithubUser | null>(() => {
-  return data.value as GithubUser | null
-})
+getUser()
+subscribe()
 
 useHead({
   title: 'Do',
@@ -22,14 +18,11 @@ useHead({
     >
       <NuxtLink to="/" class="text-slate-800">Do</NuxtLink>
       <nav class="flex items-center justify-end gap-2">
-        <ActionButton @click="login" size="small" v-if="!user">
+        <ActionButton @click="login" v-if="!user">
           Login with GitHub
         </ActionButton>
-        <ActionButton @click="logout" size="small" v-else>
-          <img
-            :src="user?.avatarUrl"
-            class="w-5 rounded-full border border-slate-300 mr-2"
-          />
+        <ActionButton @click="logout" v-else>
+          <img :src="user.avatarUrl" class="rounded-full h-5 w-5 mr-2 border" />
           Logout
         </ActionButton>
         <a

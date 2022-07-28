@@ -1,19 +1,17 @@
-import { Octokit } from 'octokit'
-import { GH_COOKIE } from '@/constants'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
-let octokit: Octokit | undefined
+let supabase: SupabaseClient | undefined
 
 export function getApi() {
   if (!process.client) {
     return null
   }
-  if (!octokit) {
-    const ghToken = useCookie(GH_COOKIE)
-    console.log(ghToken.value)
-    if (!ghToken.value) {
-      return null
-    }
-    octokit = new Octokit({ auth: ghToken.value })
+  const { supabaseUrl, supabaseKey } = useRuntimeConfig().public
+  if (!supabaseUrl || !supabaseKey) {
+    return null
   }
-  return octokit
+  if (!supabase) {
+    supabase = createClient(supabaseUrl, supabaseKey)
+  }
+  return supabase
 }
