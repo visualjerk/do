@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-import { useTodos, useTodoForm, toggleTodo } from '@/store/todos'
+import {
+  useTodos,
+  useTodoForm,
+  toggleTodo,
+  deleteTodo,
+  Todo,
+} from '@/store/todos'
 
 const { todos, getTodos, subscribe } = useTodos()
 const { newTodo, addTodo } = useTodoForm()
@@ -10,6 +16,16 @@ subscribe()
 useHead({
   title: 'Do',
 })
+
+function handleDelete(todo: Todo) {
+  const sure = confirm(`Do you really want to delete ${todo.name}?`)
+  if (!sure) {
+    return
+  }
+  deleteTodo(todo)
+}
+
+// Parse input date with https://github.com/wanasit/chrono
 </script>
 
 <template>
@@ -24,11 +40,11 @@ useHead({
       />
       <ActionButton type="submit">Add</ActionButton>
     </form>
-    <ul class="grid gap-2">
-      <li v-for="todo in todos">
-        <div>
+    <ul v-auto-animate>
+      <li v-for="todo in todos" :key="todo.id" class="mt-2 first-of-type:mt-0">
+        <div class="flex gap-3">
           <label
-            class="flex gap-3 p-3 shadow-sm"
+            class="flex flex-grow gap-3 p-3 shadow-sm"
             :class="
               todo.done
                 ? 'text-slate-300 bg-slate-50'
@@ -54,6 +70,13 @@ useHead({
             </div>
             {{ todo.name }}
           </label>
+          <button @click="() => handleDelete(todo)" class="flex-shrink-0">
+            <mdicon
+              name="delete"
+              class="text-slate-400 hover:text-red-600"
+              size="20"
+            />
+          </button>
         </div>
       </li>
     </ul>

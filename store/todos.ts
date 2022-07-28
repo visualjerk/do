@@ -1,7 +1,7 @@
 import { getApi } from '@/store/api'
 import { definitions } from '@/types/supabase'
 
-interface Todo {
+export interface Todo {
   id: number
   name: string
   done: boolean
@@ -85,6 +85,25 @@ export async function toggleTodo(todo: Todo) {
     .from<definitions['todo']>('todo')
     .update({ done: !done })
     .eq('id', todo.id)
+  if (error) {
+    console.error(error)
+  }
+}
+
+export async function deleteTodo(todo: Todo) {
+  const api = getApi()
+  if (!api) {
+    return
+  }
+  const { id: oldId } = todo
+  const { todos } = useTodos()
+  const index = todos.value.findIndex(({ id }) => id === oldId)
+  todos.value.splice(index, 1)
+
+  const { error } = await api
+    .from<definitions['todo']>('todo')
+    .delete()
+    .eq('id', oldId)
   if (error) {
     console.error(error)
   }
