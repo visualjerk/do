@@ -1,22 +1,8 @@
-import { getApi } from '@/store/api'
-import { USER_STATE } from '@/constants'
-
-export async function getUser() {
-  const api = await getApi()
-
-  if (!api) {
-    return
-  }
-  const { data, status } = await api.rest.users.getAuthenticated()
-
-  if (status >= 400) {
-    return
-  }
-
-  const user = useState(USER_STATE)
-  user.value = {
-    avatarUrl: data.avatar_url,
-  }
+export function useUser() {
+  return useAsyncQuery(['users.get'], {
+    server: false,
+    lazy: true,
+  })
 }
 
 export function login() {

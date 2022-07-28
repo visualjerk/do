@@ -9,6 +9,11 @@ export default defineNuxtConfig({
     },
     transpile: ['mdi-vue'],
   },
+  modules: ['trpc-nuxt'],
+  trpc: {
+    baseURL: process.env.APP_URL || 'http://localhost:3000',
+    endpoint: '/trpc',
+  },
   typescript: {
     strict: true,
   },

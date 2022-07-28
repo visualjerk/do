@@ -3,13 +3,14 @@ import { GH_COOKIE } from '@/constants'
 
 let octokit: Octokit | undefined
 
-export async function getApi() {
+export function getApi() {
   if (!process.client) {
-    throw null
+    return null
   }
   if (!octokit) {
     const ghToken = useCookie(GH_COOKIE)
-    if (!ghToken) {
+    console.log(ghToken.value)
+    if (!ghToken.value) {
       return null
     }
     octokit = new Octokit({ auth: ghToken.value })
