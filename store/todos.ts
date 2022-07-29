@@ -1,12 +1,14 @@
 import { definitions } from '@/types/supabase'
 import type { RealtimeSubscription } from '@supabase/supabase-js'
 import { parse } from '@visualjerk/morgen'
+import { Duration } from 'luxon'
+import { add, parseISO, formatISO } from 'date-fns'
 
-export interface Todo {
-  id: number
-  name: string
-  done: boolean
+function parseISODuration(isoDurationString: string) {
+  return Duration.fromISO(isoDurationString).toObject()
 }
+
+export type Todo = definitions['todo']
 
 export async function useTodos(subscribe = false) {
   const api = useSupabaseClient()
@@ -82,6 +84,20 @@ export async function toggleTodo(todo: Todo) {
   const { todos } = await useTodos()
   const index = todos.value.findIndex(({ id }) => id === todo.id)
   todos.value[index].done = !done
+
+  // Just update due date, if it is a recurring task
+  if (todo.repeat_frequency && todo.due_date) {
+    const duration = parseISODuration(todo.repeat_frequency)
+    const nextDate = formatISO(add(parseISO(todo.due_date), duration))
+    const { error } = await api
+      .from<definitions['todo']>('todo')
+      .update({ due_date: nextDate })
+      .eq('id', todo.id)
+    if (error) {
+      console.error(error)
+    }
+    return
+  }
 
   const { error } = await api
     .from<definitions['todo']>('todo')
