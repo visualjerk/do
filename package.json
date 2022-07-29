@@ -5,7 +5,7 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "generate-api-types": "source .env && npx openapi-typescript \"${NUXT_PUBLIC_SUPABASE_URL}/rest/v1/?apikey=${NUXT_PUBLIC_SUPABASE_KEY}\" --output types/supabase.ts"
+    "generate-api-types": "source .env && npx openapi-typescript \"${SUPABASE_URL}/rest/v1/?apikey=${SUPABASE_KEY}\" --output types/supabase.ts"
   },
   "devDependencies": {
     "@kevinmarrec/nuxt-pwa": "^0.4.2",
@@ -17,6 +17,7 @@
     "@formkit/auto-animate": "^1.0.0-beta.1",
     "@mdi/js": "^7.0.96",
     "@supabase/supabase-js": "^1.35.4",
+    "@visualjerk/morgen": "^0.0.9",
     "mdi-vue": "^3.0.13"
   }
 }
