@@ -1,5 +1,6 @@
 import { definitions } from '@/types/supabase'
 import type { RealtimeSubscription } from '@supabase/supabase-js'
+import { parse } from '@visualjerk/morgen'
 
 export interface Todo {
   id: number
@@ -28,11 +29,7 @@ export async function useTodos(subscribe = false) {
     if (!data) {
       return []
     }
-    return data.map((todo) => ({
-      id: todo.id,
-      name: todo.name,
-      done: todo.done,
-    }))
+    return data
   })
 
   if (subscribe && process.client) {
@@ -48,7 +45,7 @@ export async function useTodos(subscribe = false) {
 }
 
 export function useTodoForm() {
-  const newTodo = ref({ name: '' })
+  const newTodo = ref('')
 
   async function addTodo() {
     const api = useSupabaseClient()
@@ -56,13 +53,24 @@ export function useTodoForm() {
     if (!user) {
       return
     }
-    const { error } = await api
-      .from<definitions['todo']>('todo')
-      .insert([{ ...newTodo.value, user_id: user.id }])
+
+    const todo: Omit<definitions['todo'], 'id' | 'done'> = {
+      name: newTodo.value,
+      user_id: user.id,
+    }
+    const schedule = parse(todo.name)
+    if (schedule) {
+      todo.due_date = schedule.schedule.startDate
+      todo.repeat_frequency = schedule.schedule.repeatFrequency
+      todo.by_day = schedule.schedule.byDay
+      todo.name = todo.name.slice(schedule.match.index + schedule.match.length)
+    }
+
+    const { error } = await api.from<definitions['todo']>('todo').insert([todo])
     if (error) {
       console.error(error)
     }
-    newTodo.value = { name: '' }
+    newTodo.value = ''
   }
 
   return { newTodo, addTodo }

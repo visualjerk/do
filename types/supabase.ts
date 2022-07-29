@@ -21,6 +21,9 @@ export interface paths {
           name?: parameters["rowFilter.todo.name"];
           user_id?: parameters["rowFilter.todo.user_id"];
           done?: parameters["rowFilter.todo.done"];
+          due_date?: parameters["rowFilter.todo.due_date"];
+          repeat_frequency?: parameters["rowFilter.todo.repeat_frequency"];
+          by_day?: parameters["rowFilter.todo.by_day"];
           /** Filtering Columns */
           select?: parameters["select"];
           /** Ordering */
@@ -76,6 +79,9 @@ export interface paths {
           name?: parameters["rowFilter.todo.name"];
           user_id?: parameters["rowFilter.todo.user_id"];
           done?: parameters["rowFilter.todo.done"];
+          due_date?: parameters["rowFilter.todo.due_date"];
+          repeat_frequency?: parameters["rowFilter.todo.repeat_frequency"];
+          by_day?: parameters["rowFilter.todo.by_day"];
         };
         header: {
           /** Preference */
@@ -95,6 +101,9 @@ export interface paths {
           name?: parameters["rowFilter.todo.name"];
           user_id?: parameters["rowFilter.todo.user_id"];
           done?: parameters["rowFilter.todo.done"];
+          due_date?: parameters["rowFilter.todo.due_date"];
+          repeat_frequency?: parameters["rowFilter.todo.repeat_frequency"];
+          by_day?: parameters["rowFilter.todo.by_day"];
         };
         body: {
           /** todo */
@@ -135,6 +144,12 @@ export interface definitions {
      * @default false
      */
     done: boolean;
+    /** Format: timestamp with time zone */
+    due_date?: string;
+    /** Format: text */
+    repeat_frequency?: string;
+    /** Format: integer */
+    by_day?: number;
   };
 }
 
@@ -183,6 +198,12 @@ export interface parameters {
   "rowFilter.todo.user_id": string;
   /** Format: boolean */
   "rowFilter.todo.done": string;
+  /** Format: timestamp with time zone */
+  "rowFilter.todo.due_date": string;
+  /** Format: text */
+  "rowFilter.todo.repeat_frequency": string;
+  /** Format: integer */
+  "rowFilter.todo.by_day": string;
 }
 
 export interface operations {}

@@ -18,6 +18,7 @@
     "@mdi/js": "^7.0.96",
     "@supabase/supabase-js": "^1.35.4",
     "@visualjerk/morgen": "^0.0.9",
+    "date-fns": "^2.29.1",
     "mdi-vue": "^3.0.13"
   }
 }
