@@ -60,7 +60,7 @@ const todosFuture = computed(() =>
           class="absolute inset-0 pointer-events-none p-3 pr-10 text-lg whitespace-pre"
         >
           <template v-for="part in todoParts">
-            <span v-if="part.isSchedule" class="text-indigo-600">
+            <span v-if="part.isSchedule || part.isDate" class="text-indigo-600">
               {{ part.value }}
             </span>
             <span v-else>
@@ -110,9 +110,9 @@ const todosFuture = computed(() =>
             {{ todo.name }}
           </label>
           <mdicon
-            name="autorenew"
             size="20"
-            v-if="todo.repeat_frequency"
+            v-if="todo.due_date"
+            :name="todo.repeat_frequency ? 'autorenew' : 'calendar'"
             class="text-slate-400"
           />
           <button
@@ -161,9 +161,9 @@ const todosFuture = computed(() =>
               {{ todo.name }}
             </label>
             <mdicon
-              name="autorenew"
               size="20"
-              v-if="todo.repeat_frequency"
+              v-if="todo.due_date"
+              :name="todo.repeat_frequency ? 'autorenew' : 'calendar'"
               class="text-slate-400"
             />
             <button

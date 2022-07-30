@@ -1,8 +1,12 @@
 import { definitions } from '@/types/supabase'
 import type { RealtimeSubscription } from '@supabase/supabase-js'
-import { parseSchedule } from 'date-parrot'
+import { parseSchedule, parseDate, ParserConfig } from 'date-parrot'
 import { Duration } from 'luxon'
 import { add, parseISO, formatISO } from 'date-fns'
+
+const dateParrotConfig: ParserConfig = {
+  locales: ['en', 'de'],
+}
 
 function parseISODuration(isoDurationString: string) {
   return Duration.fromISO(isoDurationString).toObject()
@@ -13,6 +17,7 @@ export type Todo = definitions['todo']
 interface InputPart {
   value: string
   isSchedule?: boolean
+  isDate?: boolean
 }
 
 export async function useTodos(subscribe = false) {
@@ -56,26 +61,30 @@ export function useTodoForm() {
 
   const todoParts = computed(() => {
     const value = newTodo.value
-    const schedule = parseSchedule(value)
-    if (!schedule) {
+    const schedule = parseSchedule(value, dateParrotConfig)
+    const date = parseDate(value, dateParrotConfig)
+    const match = schedule ? schedule.match : date?.match
+    if (!match) {
       return [
         {
           value: newTodo.value,
         },
       ]
     }
+
     const parts: InputPart[] = [
       {
-        isSchedule: true,
-        value: schedule.match.text,
+        isSchedule: !!schedule,
+        isDate: !schedule && !!date,
+        value: match.text,
       },
     ]
-    if (schedule.match.index > 0) {
+    if (match.index > 0) {
       parts.unshift({
-        value: value.slice(0, schedule.match.index),
+        value: value.slice(0, match.index),
       })
     }
-    const endIndex = schedule.match.index + schedule.match.text.length
+    const endIndex = match.index + match.text.length
     if (value.length > endIndex) {
       parts.push({
         value: value.slice(endIndex),
@@ -95,13 +104,20 @@ export function useTodoForm() {
       name: newTodo.value,
       user_id: user.id,
     }
-    const schedule = parseSchedule(todo.name)
+    const schedule = parseSchedule(todo.name, dateParrotConfig)
+    const date = parseDate(todo.name, dateParrotConfig)
     if (schedule) {
       todo.due_date = schedule.schedule.startDate
       todo.repeat_frequency = schedule.schedule.repeatFrequency
       todo.by_day = schedule.schedule.byDay
       todo.name = todoParts.value
         .filter((part) => !part.isSchedule)
+        .map((part) => part.value)
+        .join('')
+    } else if (date) {
+      todo.due_date = date.date
+      todo.name = todoParts.value
+        .filter((part) => !part.isDate)
         .map((part) => part.value)
         .join('')
     }
