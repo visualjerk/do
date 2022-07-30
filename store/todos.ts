@@ -1,6 +1,6 @@
 import { definitions } from '@/types/supabase'
 import type { RealtimeSubscription } from '@supabase/supabase-js'
-import { parse } from '@visualjerk/morgen'
+import { parseSchedule } from 'date-parrot'
 import { Duration } from 'luxon'
 import { add, parseISO, formatISO } from 'date-fns'
 
@@ -56,7 +56,7 @@ export function useTodoForm() {
 
   const todoParts = computed(() => {
     const value = newTodo.value
-    const schedule = parse(value)
+    const schedule = parseSchedule(value)
     if (!schedule) {
       return [
         {
@@ -95,7 +95,7 @@ export function useTodoForm() {
       name: newTodo.value,
       user_id: user.id,
     }
-    const schedule = parse(todo.name)
+    const schedule = parseSchedule(todo.name)
     if (schedule) {
       todo.due_date = schedule.schedule.startDate
       todo.repeat_frequency = schedule.schedule.repeatFrequency
