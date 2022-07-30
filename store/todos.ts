@@ -10,6 +10,11 @@ function parseISODuration(isoDurationString: string) {
 
 export type Todo = definitions['todo']
 
+interface InputPart {
+  value: string
+  isSchedule?: boolean
+}
+
 export async function useTodos(subscribe = false) {
   const api = useSupabaseClient()
   let subscription: RealtimeSubscription | undefined
@@ -49,6 +54,36 @@ export async function useTodos(subscribe = false) {
 export function useTodoForm() {
   const newTodo = ref('')
 
+  const todoParts = computed(() => {
+    const value = newTodo.value
+    const schedule = parse(value)
+    if (!schedule) {
+      return [
+        {
+          value: newTodo.value,
+        },
+      ]
+    }
+    const parts: InputPart[] = [
+      {
+        isSchedule: true,
+        value: schedule.match.text,
+      },
+    ]
+    if (schedule.match.index > 0) {
+      parts.unshift({
+        value: value.slice(0, schedule.match.index),
+      })
+    }
+    const endIndex = schedule.match.index + schedule.match.text.length
+    if (value.length > endIndex) {
+      parts.push({
+        value: value.slice(endIndex),
+      })
+    }
+    return parts
+  })
+
   async function addTodo() {
     const api = useSupabaseClient()
     const user = api.auth.user()
@@ -65,7 +100,10 @@ export function useTodoForm() {
       todo.due_date = schedule.schedule.startDate
       todo.repeat_frequency = schedule.schedule.repeatFrequency
       todo.by_day = schedule.schedule.byDay
-      todo.name = todo.name.slice(schedule.match.index + schedule.match.length)
+      todo.name = todoParts.value
+        .filter((part) => !part.isSchedule)
+        .map((part) => part.value)
+        .join('')
     }
 
     const { error } = await api.from<definitions['todo']>('todo').insert([todo])
@@ -75,7 +113,7 @@ export function useTodoForm() {
     newTodo.value = ''
   }
 
-  return { newTodo, addTodo }
+  return { newTodo, todoParts, addTodo }
 }
 
 export async function toggleTodo(todo: Todo) {

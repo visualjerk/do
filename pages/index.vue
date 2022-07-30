@@ -6,11 +6,10 @@ import {
   deleteTodo,
   Todo,
 } from '@/store/todos'
-import { parse } from '@visualjerk/morgen'
 import { isToday, isPast, isFuture, parseISO } from 'date-fns'
 
 const { todos } = await useTodos(true)
-const { newTodo, addTodo } = useTodoForm()
+const { newTodo, todoParts, addTodo } = useTodoForm()
 
 useHead({
   title: 'Do',
@@ -24,7 +23,6 @@ function handleDelete(todo: Todo) {
   deleteTodo(todo)
 }
 
-const parsed = computed(() => parse(newTodo.value))
 const todosToday = computed(() =>
   todos.value.filter(({ due_date }) => {
     if (!due_date) {
@@ -51,12 +49,26 @@ const todosFuture = computed(() =>
   <div>
     <h1 class="mb-8">Todos</h1>
     <form @submit.prevent="addTodo" class="mb-6 relative">
-      <input
-        v-model="newTodo"
-        placeholder="What needs to be done?"
-        autofocus
-        class="p-3 pr-10 w-full text-lg focus:outline-indigo-500"
-      />
+      <div>
+        <input
+          v-model="newTodo"
+          placeholder="What needs to be done?"
+          autofocus
+          class="p-3 pr-10 w-full text-lg bg-white text-white caret-slate-800 focus:outline-indigo-500"
+        />
+        <div
+          class="absolute inset-0 pointer-events-none p-3 pr-10 text-lg whitespace-pre"
+        >
+          <template v-for="part in todoParts">
+            <span v-if="part.isSchedule" class="text-indigo-600">
+              {{ part.value }}
+            </span>
+            <span v-else>
+              {{ part.value }}
+            </span>
+          </template>
+        </div>
+      </div>
       <button
         type="submit"
         class="absolute inset-y-0 right-0 px-3 text-indigo-600 hover:text-indigo-800"
@@ -64,9 +76,6 @@ const todosFuture = computed(() =>
         <mdicon name="plus" />
       </button>
     </form>
-    <div class="mb-6">
-      <pre>{{ parsed }}</pre>
-    </div>
     <h2 class="mb-3">Today</h2>
     <ul v-auto-animate class="mb-8">
       <li
@@ -101,7 +110,7 @@ const todosFuture = computed(() =>
             {{ todo.name }}
           </label>
           <mdicon
-            name="refresh"
+            name="autorenew"
             size="20"
             v-if="todo.repeat_frequency"
             class="text-slate-400"
@@ -152,7 +161,7 @@ const todosFuture = computed(() =>
               {{ todo.name }}
             </label>
             <mdicon
-              name="refresh"
+              name="autorenew"
               size="20"
               v-if="todo.repeat_frequency"
               class="text-slate-400"
