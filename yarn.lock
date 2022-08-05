@@ -1547,10 +1547,10 @@ date-fns@^2.29.1:
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.29.1.tgz#9667c2615525e552b5135a3116b95b1961456e60"
   integrity sha512-dlLD5rKaKxpFdnjrs+5azHDFOPEu4ANy/LTh04A1DTzMM7qoajmKCBc8pkKRFT41CNzw+4gQh79X5C+Jq27HAw==
 
-date-parrot@^0.0.12:
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/date-parrot/-/date-parrot-0.0.12.tgz#85b806d1aca49d2054c2011507c9815c5fc6a630"
-  integrity sha512-72eHmK3iVv3GQgXudnFgyquqHHbIsiL+pxz2p+t2k9W9N+Qcx8SS0d5mm2cD3+nEH4SS+4cOR1iQ2EHbVdmSJA==
+date-parrot@^0.0.21:
+  version "0.0.21"
+  resolved "https://registry.yarnpkg.com/date-parrot/-/date-parrot-0.0.21.tgz#eadf2223a6e9cb13bfef12e264829e8d613b905c"
+  integrity sha512-sDN4FAcO1oYlHrQ1O7lBt+2TSyNdhn6hifri68pUVa7nJHYO0TQnXh3KK189nIzPBia9uGNn+CPBD6F5KzYMEA==
 
 debug@2.6.9, debug@^2.2.0:
   version "2.6.9"
