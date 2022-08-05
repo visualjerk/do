@@ -22,17 +22,22 @@ defineProps<{
         @change="() => toggleTodo(todo)"
       />
       <div
-        class="w-8 h-8 flex items-center justify-center border-2 border-slate-200 cursor-pointer"
-        :class="todo.done ? 'bg-slate-300' : ''"
+        class="w-8 h-8 flex items-center justify-center border-2 cursor-pointer text-slate-500"
+        :class="
+          todo.done
+            ? ' border-slate-400'
+            : 'border-slate-200 text-white hover:text-slate-200'
+        "
       >
-        <mdicon v-if="todo.done" name="check" class="text-white" size="20" />
+        <mdicon name="check" size="24" />
       </div>
     </label>
     <div class="flex-grow py-2">
       <div class="">{{ todo.name }}</div>
       <span
         v-if="todo.due_date"
-        class="px-2 py-0.5 inline-flex items-center gap-1 bg-slate-100 text-slate-600 text-xs rounded-md font-medium"
+        class="px-2 py-0.5 inline-flex items-center gap-1 bg-slate-100 text-xs rounded-md font-medium"
+        :class="todo.done ? 'text-slate-300' : 'text-slate-600'"
       >
         <mdicon
           size="12"
