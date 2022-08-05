@@ -2,7 +2,7 @@ import { definitions } from '@/types/supabase'
 import type { RealtimeSubscription } from '@supabase/supabase-js'
 import { parseSchedule, parseDate, ParserConfig } from 'date-parrot'
 import { Duration } from 'luxon'
-import { add, parseISO, formatISO } from 'date-fns'
+import { add, parseISO, formatISO, isPast } from 'date-fns'
 
 const dateParrotConfig: ParserConfig = {
   locales: ['en', 'de'],
@@ -132,6 +132,24 @@ export function useTodoForm() {
   return { newTodo, todoParts, addTodo }
 }
 
+function getNextOccurance(todo: Todo): string {
+  const { repeat_frequency, due_date } = todo
+  if (!repeat_frequency || !due_date) {
+    throw new Error('Todo has no repeat_frequency or due_date')
+  }
+  const duration = parseISODuration(repeat_frequency)
+  const nextDate = add(parseISO(due_date), duration)
+
+  if (isPast(nextDate)) {
+    return getNextOccurance({
+      ...todo,
+      due_date: formatISO(nextDate),
+    })
+  }
+
+  return formatISO(nextDate)
+}
+
 export async function toggleTodo(todo: Todo) {
   const api = useSupabaseClient()
   const { done } = todo
@@ -141,8 +159,7 @@ export async function toggleTodo(todo: Todo) {
 
   // Just update due date, if it is a recurring task
   if (todo.repeat_frequency && todo.due_date) {
-    const duration = parseISODuration(todo.repeat_frequency)
-    const nextDate = formatISO(add(parseISO(todo.due_date), duration))
+    const nextDate = getNextOccurance(todo)
     const { error } = await api
       .from<definitions['todo']>('todo')
       .update({ due_date: nextDate })
