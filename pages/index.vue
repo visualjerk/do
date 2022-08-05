@@ -1,11 +1,5 @@
 <script lang="ts" setup>
-import {
-  useTodos,
-  useTodoForm,
-  toggleTodo,
-  deleteTodo,
-  Todo,
-} from '@/store/todos'
+import { useTodos, useTodoForm } from '@/store/todos'
 import { isToday, isPast, isFuture, parseISO } from 'date-fns'
 
 const { todos } = await useTodos(true)
@@ -14,14 +8,6 @@ const { newTodo, todoParts, addTodo } = useTodoForm()
 useHead({
   title: 'Do',
 })
-
-function handleDelete(todo: Todo) {
-  const sure = confirm(`Do you really want to delete ${todo.name}?`)
-  if (!sure) {
-    return
-  }
-  deleteTodo(todo)
-}
 
 const todosToday = computed(() =>
   todos.value.filter(({ due_date }) => {
@@ -41,8 +27,6 @@ const todosFuture = computed(() =>
     return !isToday(date) && isFuture(date)
   })
 )
-
-// Parse input date with https://github.com/wanasit/chrono
 </script>
 
 <template>
@@ -83,45 +67,7 @@ const todosFuture = computed(() =>
         :key="todo.id"
         class="mt-2 first-of-type:mt-0"
       >
-        <div
-          class="flex gap-3 items-center shadow-sm"
-          :class="
-            todo.done ? 'text-slate-300 bg-slate-50' : 'text-slate-700 bg-white'
-          "
-        >
-          <label class="flex flex-grow gap-3 p-3">
-            <input
-              type="checkbox"
-              :checked="todo.done"
-              class="hidden"
-              @change="() => toggleTodo(todo)"
-            />
-            <div
-              class="w-6 h-6 flex items-center justify-center border-2 border-slate-300"
-              :class="todo.done ? 'bg-slate-300' : ''"
-            >
-              <mdicon
-                v-if="todo.done"
-                name="check"
-                class="text-white"
-                size="20"
-              />
-            </div>
-            {{ todo.name }}
-          </label>
-          <mdicon
-            size="20"
-            v-if="todo.due_date"
-            :name="todo.repeat_frequency ? 'autorenew' : 'calendar'"
-            class="text-slate-400"
-          />
-          <button
-            class="flex-shrink-0 px-3 text-slate-400 hover:text-indigo-600"
-            @click="() => handleDelete(todo)"
-          >
-            <mdicon name="delete" size="20" />
-          </button>
-        </div>
+        <TodoItem :todo="todo" />
       </li>
     </ul>
     <div v-if="todosFuture.length > 0">
@@ -132,47 +78,7 @@ const todosFuture = computed(() =>
           :key="todo.id"
           class="mt-2 first-of-type:mt-0"
         >
-          <div
-            class="flex gap-3 items-center shadow-sm"
-            :class="
-              todo.done
-                ? 'text-slate-300 bg-slate-50'
-                : 'text-slate-700 bg-white'
-            "
-          >
-            <label class="flex flex-grow gap-3 p-3">
-              <input
-                type="checkbox"
-                :checked="todo.done"
-                class="hidden"
-                @change="() => toggleTodo(todo)"
-              />
-              <div
-                class="w-6 h-6 flex items-center justify-center border-2 border-slate-300"
-                :class="todo.done ? 'bg-slate-300' : ''"
-              >
-                <mdicon
-                  v-if="todo.done"
-                  name="check"
-                  class="text-white"
-                  size="20"
-                />
-              </div>
-              {{ todo.name }}
-            </label>
-            <mdicon
-              size="20"
-              v-if="todo.due_date"
-              :name="todo.repeat_frequency ? 'autorenew' : 'calendar'"
-              class="text-slate-400"
-            />
-            <button
-              class="flex-shrink-0 px-3 text-slate-400 hover:text-indigo-600"
-              @click="() => handleDelete(todo)"
-            >
-              <mdicon name="delete" size="20" />
-            </button>
-          </div>
+          <TodoItem :todo="todo" />
         </li>
       </ul>
     </div>
