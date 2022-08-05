@@ -2,7 +2,7 @@ import { definitions } from '@/types/supabase'
 import type { RealtimeSubscription } from '@supabase/supabase-js'
 import { parseSchedule, parseDate, ParserConfig } from 'date-parrot'
 import { Duration } from 'luxon'
-import { add, parseISO, formatISO, isPast } from 'date-fns'
+import { add, parseISO, formatISO, isPast, setDate } from 'date-fns'
 
 const dateParrotConfig: ParserConfig = {
   locales: ['en', 'de'],
@@ -133,12 +133,16 @@ export function useTodoForm() {
 }
 
 function getNextOccurance(todo: Todo): string {
-  const { repeat_frequency, due_date } = todo
+  const { repeat_frequency, due_date, by_day } = todo
   if (!repeat_frequency || !due_date) {
     throw new Error('Todo has no repeat_frequency or due_date')
   }
   const duration = parseISODuration(repeat_frequency)
-  const nextDate = add(parseISO(due_date), duration)
+  let nextDate = add(parseISO(due_date), duration)
+
+  if (by_day != null) {
+    nextDate = setDate(nextDate, by_day)
+  }
 
   if (isPast(nextDate)) {
     return getNextOccurance({
