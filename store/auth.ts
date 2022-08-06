@@ -21,7 +21,8 @@ export function useUser() {
 
 export async function login() {
   const api = useSupabaseClient()
-  const appUrl = useRuntimeConfig().app.baseURL
+  const baseUrl = useRuntimeConfig().app.baseURL
+  const appUrl = `${window.location.protocol}//${window.location.host}${baseUrl}`
   await api.auth.signIn(
     {
       provider: 'github',
