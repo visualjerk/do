@@ -173,7 +173,7 @@ function getNextOccurance(todo: Todo): string {
   }
 
   if (by_time != null) {
-    const [hours, minutes, seconds] = by_time.split(/Z|\+/)[0].split(':')
+    const [hours, minutes, seconds] = by_time.split(/Z|\+|-/)[0].split(':')
     nextDate = setHours(nextDate, parseInt(hours))
     nextDate = setMinutes(nextDate, parseInt(minutes))
     nextDate = setSeconds(nextDate, parseInt(seconds))
