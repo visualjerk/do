@@ -2,19 +2,19 @@
 
 @layer base {
   h1,.h1 {
-    @apply text-3xl sm:text-5xl text-indigo-600 font-extralight;
+    @apply text-3xl sm:text-4xl text-indigo-600 dark:text-teal-400 font-extralight;
   }
   h2,.h2 {
-    @apply text-xl sm:text-2xl text-slate-800 font-bold;
+    @apply text-xl sm:text-2xl text-slate-800 dark:text-slate-200 font-bold;
   }
   h3,.h3 {
-    @apply text-lg sm:text-xl text-slate-800 font-bold;
+    @apply text-lg sm:text-xl text-slate-800 dark:text-slate-200 font-bold;
   }
   p,.p {
-    @apply  text-slate-700;
+    @apply  text-slate-700 dark:text-slate-300;
   }
   p > a,.p > a {
-    @apply text-teal-600 hover:text-teal-700;
+    @apply text-teal-600 hover:text-teal-700 dark:text-teal-300 dark:hover:text-teal-200;
   }
 }
 
@@ -22,5 +22,5 @@
 @tailwind utilities;
 
 body {
-  @apply overflow-y-scroll bg-slate-100;
+  @apply overflow-y-scroll bg-slate-100 dark:bg-slate-900;
 }

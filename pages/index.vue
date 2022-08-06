@@ -38,13 +38,16 @@ const todosFuture = computed(() =>
           v-model="newTodo"
           placeholder="What needs to be done?"
           autofocus
-          class="p-3 pr-10 w-full text-lg bg-white text-white caret-slate-800 focus:outline-indigo-500"
+          class="p-3 pr-10 w-full text-lg bg-white text-white caret-slate-800 focus:outline-indigo-500 outline-none dark:bg-slate-800 dark:text-slate-800 dark:caret-slate-200 dark:focus:outline-teal-400"
         />
         <div
-          class="absolute inset-0 pointer-events-none p-3 pr-10 text-lg whitespace-pre"
+          class="absolute inset-0 pointer-events-none p-3 pr-10 text-lg whitespace-pre text-slate-800 dark:text-slate-200"
         >
           <template v-for="part in todoParts">
-            <span v-if="part.isSchedule || part.isDate" class="text-indigo-600">
+            <span
+              v-if="part.isSchedule || part.isDate"
+              class="text-indigo-600 dark:text-teal-500"
+            >
               {{ part.value }}
             </span>
             <span v-else>
@@ -55,7 +58,7 @@ const todosFuture = computed(() =>
       </div>
       <button
         type="submit"
-        class="absolute inset-y-0 right-0 px-3 text-indigo-600 hover:text-indigo-800"
+        class="absolute inset-y-0 right-0 px-3 text-indigo-500 hover:text-indigo-600 dark:text-teal-400 dark:hover:text-teal-500"
       >
         <mdicon name="plus" />
       </button>
