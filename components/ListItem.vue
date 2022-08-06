@@ -1,26 +1,23 @@
 <script setup lang="ts">
-import { List, deleteList } from '@/store/lists'
+import { List } from '@/store/lists'
 
 defineProps<{
   list: List
 }>()
 
-function handleDelete(list: List) {
-  const sure = confirm(
-    `Do you really want to delete ${list.name} and all related todos?`
-  )
-  if (!sure) {
-    return
-  }
-  deleteList(list)
-}
+defineEmits<{
+  (e: 'delete'): void
+}>()
 </script>
 
 <template>
   <BaseItem :to="`/list/${list.id}`">
-    {{ list.name }}
+    <div class="flex items-center gap-2">
+      <mdicon name="format-list-checks" size="20" class="text-slate-500" />
+      {{ list.name }}
+    </div>
     <template #post>
-      <DeleteButton @click="() => handleDelete(list)">
+      <DeleteButton @click="$emit('delete')">
         <mdicon name="delete" size="20" />
       </DeleteButton>
     </template>

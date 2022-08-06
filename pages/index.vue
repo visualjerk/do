@@ -1,8 +1,18 @@
 <script lang="ts" setup>
-import { useLists, useListForm } from '@/store/lists'
+import { useLists, useListForm, deleteList, List } from '@/store/lists'
 
 const { lists } = await useLists(true)
 const { newList, addList } = useListForm()
+
+function handleDelete(list: List) {
+  const sure = confirm(
+    `Do you really want to delete ${list.name} and all related todos?`
+  )
+  if (!sure) {
+    return
+  }
+  deleteList(list)
+}
 
 useHead({
   title: 'Do',
@@ -14,7 +24,12 @@ useHead({
     <h1 class="mb-4 sm:mb-8">Todo</h1>
     <ul class="mb-8">
       <li>
-        <BaseItem to="/inbox">Inbox</BaseItem>
+        <BaseItem to="/inbox" key="inbox">
+          <div class="flex items-center gap-2">
+            <mdicon name="inbox-full" size="20" class="text-slate-500" />
+            Inbox
+          </div>
+        </BaseItem>
       </li>
     </ul>
     <h2 class="mb-4 sm:mb-8">Lists</h2>
@@ -31,7 +46,7 @@ useHead({
     </form>
     <ul v-auto-animate class="mb-8">
       <li v-for="list in lists" :key="list.id" class="mt-2">
-        <ListItem :list="list" />
+        <ListItem :list="list" @delete="() => handleDelete(list)" />
       </li>
     </ul>
   </div>
