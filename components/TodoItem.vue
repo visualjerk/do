@@ -8,7 +8,7 @@ import {
   addDays,
   isBefore,
 } from 'date-fns'
-import { Todo, toggleTodo, deleteTodo } from '~~/store/todos.js'
+import { Todo, toggleTodo, deleteTodo } from '@/store/todos.js'
 
 defineProps<{
   todo: Todo
