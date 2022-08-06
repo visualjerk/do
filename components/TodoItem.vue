@@ -1,10 +1,31 @@
 <script setup lang="ts">
-import { intlFormatDistance, parseISO, intlFormat } from 'date-fns'
+import {
+  intlFormatDistance,
+  intlFormat,
+  parseISO,
+  format,
+  isAfter,
+  addDays,
+  isBefore,
+} from 'date-fns'
 import { Todo, toggleTodo, deleteTodo } from '~~/store/todos.js'
 
 defineProps<{
   todo: Todo
 }>()
+
+function formatDate(dateISO: string) {
+  const date = parseISO(dateISO)
+  const now = new Date()
+  const pastDate = addDays(now, -7)
+  const futureDate = addDays(now, 7)
+  if (isAfter(date, pastDate) && isBefore(date, futureDate)) {
+    return intlFormatDistance(date, now, {
+      unit: 'day',
+    })
+  }
+  return intlFormat(date)
+}
 </script>
 
 <template>
@@ -34,21 +55,25 @@ defineProps<{
     </label>
     <div class="flex-grow py-2">
       <div class="">{{ todo.name }}</div>
-      <span
-        v-if="todo.due_date"
-        class="px-2 py-0.5 inline-flex items-center gap-1 bg-slate-100 text-xs rounded-md font-medium"
-        :class="todo.done ? 'text-slate-300' : 'text-slate-600'"
-      >
-        <mdicon
-          size="12"
-          :name="todo.repeat_frequency ? 'autorenew' : 'calendar'"
-        />
-        {{
-          intlFormatDistance(parseISO(todo.due_date), new Date(), {
-            unit: 'day',
-          })
-        }}
-      </span>
+      <div class="flex items-center gap-2" v-if="todo.due_date">
+        <span
+          class="px-2 py-0.5 inline-flex items-center gap-1 bg-slate-100 text-xs rounded-md font-medium"
+          :class="todo.done ? 'text-slate-300' : 'text-slate-600'"
+        >
+          <mdicon
+            size="12"
+            :name="todo.repeat_frequency ? 'autorenew' : 'calendar'"
+          />
+          {{ formatDate(todo.due_date) }}
+        </span>
+        <span
+          v-if="todo.by_time"
+          class="px-2 py-0.5 inline-flex items-center gap-1 bg-slate-100 text-xs rounded-md font-medium"
+          :class="todo.done ? 'text-slate-300' : 'text-slate-600'"
+        >
+          {{ format(parseISO(todo.due_date), 'HH:mm') }}
+        </span>
+      </div>
     </div>
     <button
       class="flex-shrink-0 px-3 text-slate-400 hover:text-indigo-600"
