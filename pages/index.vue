@@ -43,12 +43,12 @@ const todosFuture = computed(() =>
           class="absolute inset-0 p-3 pr-12 w-full text-lg bg-white text-white caret-slate-800 focus:outline-indigo-500 outline-none dark:bg-slate-800 dark:text-slate-800 dark:caret-slate-200 dark:focus:outline-teal-400 resize-none"
         />
         <div
-          class="relative pointer-events-none p-3 pr-12 text-lg whitespace-pre-wrap text-slate-800 dark:text-slate-200"
+          class="relative pointer-events-none p-3 pr-12 text-lg whitespace-pre-wrap text-slate-800 dark:text-slate-100"
         >
           <template v-for="part in todoParts">
             <span
               v-if="part.isSchedule || part.isDate"
-              class="text-indigo-600 dark:text-teal-500"
+              class="text-indigo-600 dark:text-teal-400"
             >
               {{ part.value }}
             </span>

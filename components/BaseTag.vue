@@ -10,7 +10,7 @@ defineProps<{
     :class="
       muted
         ? 'text-slate-300 dark:text-slate-500'
-        : 'text-slate-600 dark:text-slate-300'
+        : 'text-slate-600 dark:text-slate-200'
     "
   >
     <slot />

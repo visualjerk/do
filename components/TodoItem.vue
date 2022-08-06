@@ -42,7 +42,7 @@ function handleDelete(todo: Todo) {
     :class="
       todo.done
         ? 'text-slate-300 bg-slate-50 dark:text-slate-500 dark:bg-slate-800'
-        : 'text-slate-700 bg-white dark:text-slate-200 dark:bg-slate-800'
+        : 'text-slate-700 bg-white dark:text-slate-100 dark:bg-slate-800'
     "
   >
     <label class="flex p-2 sm:p-3">
@@ -56,7 +56,7 @@ function handleDelete(todo: Todo) {
         class="w-8 h-8 flex items-center justify-center border-2 cursor-pointer"
         :class="
           todo.done
-            ? 'border-slate-400 text-slate-500 dark:text-slate-300'
+            ? 'border-slate-400 text-slate-500 dark:text-slate-100'
             : 'border-slate-200 text-white hover:text-slate-200 dark:border-slate-600 dark:text-slate-800 dark:hover:text-slate-600'
         "
       >
