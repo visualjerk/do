@@ -219,10 +219,6 @@ export async function toggleTodo(todo: Todo) {
 }
 
 export async function deleteTodo(todo: Todo) {
-  const sure = confirm(`Do you really want to delete ${todo.name}?`)
-  if (!sure) {
-    return
-  }
   const api = useSupabaseClient()
   const { id: oldId } = todo
   const { todos } = await useTodos()

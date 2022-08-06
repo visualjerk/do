@@ -26,6 +26,14 @@ function formatDate(dateISO: string) {
   }
   return intlFormat(date)
 }
+
+function handleDelete(todo: Todo) {
+  const sure = confirm(`Do you really want to delete ${todo.name}?`)
+  if (!sure) {
+    return
+  }
+  deleteTodo(todo)
+}
 </script>
 
 <template>
@@ -77,7 +85,7 @@ function formatDate(dateISO: string) {
     </div>
     <button
       class="flex-shrink-0 px-3 text-slate-400 hover:text-indigo-600"
-      @click="() => deleteTodo(todo)"
+      @click="() => handleDelete(todo)"
     >
       <mdicon name="delete" size="20" />
     </button>
