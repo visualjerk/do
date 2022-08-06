@@ -2,7 +2,17 @@ import { definitions } from '@/types/supabase'
 import type { RealtimeSubscription } from '@supabase/supabase-js'
 import { parseSchedule, parseDate, ParserConfig } from 'date-parrot'
 import { Duration } from 'luxon'
-import { add, parseISO, formatISO, isPast, setDate } from 'date-fns'
+import {
+  add,
+  parseISO,
+  formatISO,
+  isPast,
+  setDate,
+  setMonth,
+  setHours,
+  setMinutes,
+  setSeconds,
+} from 'date-fns'
 
 const dateParrotConfig: ParserConfig = {
   locales: ['en', 'de'],
@@ -110,6 +120,9 @@ export function useTodoForm() {
       todo.due_date = schedule.schedule.startDate
       todo.repeat_frequency = schedule.schedule.repeatFrequency
       todo.by_day = schedule.schedule.byDay
+      todo.by_month = schedule.schedule.byMonth
+      todo.by_month_day = schedule.schedule.byMonthDay
+      todo.by_time = schedule.schedule.byTime
       todo.name = todoParts.value
         .filter((part) => !part.isSchedule)
         .map((part) => part.value)
@@ -133,7 +146,14 @@ export function useTodoForm() {
 }
 
 function getNextOccurance(todo: Todo): string {
-  const { repeat_frequency, due_date, by_day } = todo
+  const {
+    repeat_frequency,
+    due_date,
+    by_day,
+    by_month,
+    by_month_day,
+    by_time,
+  } = todo
   if (!repeat_frequency || !due_date) {
     throw new Error('Todo has no repeat_frequency or due_date')
   }
@@ -142,6 +162,21 @@ function getNextOccurance(todo: Todo): string {
 
   if (by_day != null) {
     nextDate = setDate(nextDate, by_day)
+  }
+
+  if (by_month != null) {
+    nextDate = setMonth(nextDate, by_month)
+
+    if (by_month_day != null) {
+      nextDate = setDate(nextDate, by_month_day)
+    }
+  }
+
+  if (by_time != null) {
+    const [hours, minutes, seconds] = by_time.split(/Z|\+/)[0].split(':')
+    nextDate = setHours(nextDate, parseInt(hours))
+    nextDate = setMinutes(nextDate, parseInt(minutes))
+    nextDate = setSeconds(nextDate, parseInt(seconds))
   }
 
   if (isPast(nextDate)) {

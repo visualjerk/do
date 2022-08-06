@@ -24,6 +24,9 @@ export interface paths {
           due_date?: parameters["rowFilter.todo.due_date"];
           repeat_frequency?: parameters["rowFilter.todo.repeat_frequency"];
           by_day?: parameters["rowFilter.todo.by_day"];
+          by_month?: parameters["rowFilter.todo.by_month"];
+          by_month_day?: parameters["rowFilter.todo.by_month_day"];
+          by_time?: parameters["rowFilter.todo.by_time"];
           /** Filtering Columns */
           select?: parameters["select"];
           /** Ordering */
@@ -82,6 +85,9 @@ export interface paths {
           due_date?: parameters["rowFilter.todo.due_date"];
           repeat_frequency?: parameters["rowFilter.todo.repeat_frequency"];
           by_day?: parameters["rowFilter.todo.by_day"];
+          by_month?: parameters["rowFilter.todo.by_month"];
+          by_month_day?: parameters["rowFilter.todo.by_month_day"];
+          by_time?: parameters["rowFilter.todo.by_time"];
         };
         header: {
           /** Preference */
@@ -104,6 +110,9 @@ export interface paths {
           due_date?: parameters["rowFilter.todo.due_date"];
           repeat_frequency?: parameters["rowFilter.todo.repeat_frequency"];
           by_day?: parameters["rowFilter.todo.by_day"];
+          by_month?: parameters["rowFilter.todo.by_month"];
+          by_month_day?: parameters["rowFilter.todo.by_month_day"];
+          by_time?: parameters["rowFilter.todo.by_time"];
         };
         body: {
           /** todo */
@@ -148,8 +157,14 @@ export interface definitions {
     due_date?: string;
     /** Format: text */
     repeat_frequency?: string;
-    /** Format: integer */
+    /** Format: smallint */
     by_day?: number;
+    /** Format: smallint */
+    by_month?: number;
+    /** Format: smallint */
+    by_month_day?: number;
+    /** Format: time with time zone */
+    by_time?: string;
   };
 }
 
@@ -202,8 +217,14 @@ export interface parameters {
   "rowFilter.todo.due_date": string;
   /** Format: text */
   "rowFilter.todo.repeat_frequency": string;
-  /** Format: integer */
+  /** Format: smallint */
   "rowFilter.todo.by_day": string;
+  /** Format: smallint */
+  "rowFilter.todo.by_month": string;
+  /** Format: smallint */
+  "rowFilter.todo.by_month_day": string;
+  /** Format: time with time zone */
+  "rowFilter.todo.by_time": string;
 }
 
 export interface operations {}
