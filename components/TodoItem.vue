@@ -8,10 +8,15 @@ import {
   addDays,
   isBefore,
 } from 'date-fns'
-import { Todo, toggleTodo, deleteTodo } from '@/store/todos.js'
+import { Todo } from '@/store/todos.js'
 
 defineProps<{
   todo: Todo
+}>()
+
+defineEmits<{
+  (e: 'toggle'): void
+  (e: 'delete'): void
 }>()
 
 function formatDate(dateISO: string) {
@@ -26,14 +31,6 @@ function formatDate(dateISO: string) {
   }
   return intlFormat(date)
 }
-
-function handleDelete(todo: Todo) {
-  const sure = confirm(`Do you really want to delete ${todo.name}?`)
-  if (!sure) {
-    return
-  }
-  deleteTodo(todo)
-}
 </script>
 
 <template>
@@ -44,7 +41,7 @@ function handleDelete(todo: Todo) {
           type="checkbox"
           :checked="todo.done"
           class="hidden"
-          @change="() => toggleTodo(todo)"
+          @change="$emit('toggle')"
         />
         <div
           class="w-8 h-8 flex items-center justify-center border-2 cursor-pointer"
@@ -72,7 +69,7 @@ function handleDelete(todo: Todo) {
       </BaseTag>
     </div>
     <template #post>
-      <DeleteButton @click="() => handleDelete(todo)" />
+      <DeleteButton @click="$emit('delete')" />
     </template>
   </BaseItem>
 </template>

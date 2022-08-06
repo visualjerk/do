@@ -3,6 +3,43 @@ import type { RealtimeSubscription } from '@supabase/supabase-js'
 
 export type List = definitions['list']
 
+export async function useList(id: string, subscribe = false) {
+  const api = useSupabaseClient()
+  let subscription: RealtimeSubscription | undefined
+
+  if (subscribe && process.client) {
+    onUnmounted(() => {
+      if (subscription) {
+        api.removeSubscription(subscription)
+      }
+    })
+  }
+
+  const { data: list, refresh } = await useAsyncData(`list:${id}`, async () => {
+    const { data } = await api
+      .from<List>('list')
+      .select('*')
+      .filter('id', 'eq', id)
+      .order('id')
+
+    if (!data?.length) {
+      return null
+    }
+    return data[0]
+  })
+
+  if (subscribe && process.client) {
+    subscription = api
+      .from(`list:id=eq.${id}`)
+      .on('*', () => {
+        refresh()
+      })
+      .subscribe()
+  }
+
+  return { list }
+}
+
 export async function useLists(subscribe = false) {
   const api = useSupabaseClient()
   let subscription: RealtimeSubscription | undefined
@@ -49,7 +86,7 @@ export function useListForm() {
       return
     }
 
-    const list: Omit<definitions['list'], 'id'> = {
+    const list: Omit<List, 'id'> = {
       name: newList.value,
       user_id: user.id,
     }
@@ -58,7 +95,7 @@ export function useListForm() {
       return
     }
 
-    const { error } = await api.from<definitions['list']>('list').insert([list])
+    const { error } = await api.from<List>('list').insert([list])
     if (error) {
       console.error(error)
     }
@@ -84,10 +121,7 @@ export async function deleteList(list: List) {
     console.error(errorTodos)
   }
 
-  const { error } = await api
-    .from<definitions['list']>('list')
-    .delete()
-    .eq('id', oldId)
+  const { error } = await api.from<List>('list').delete().eq('id', oldId)
   if (error) {
     console.error(error)
   }

@@ -1,3 +1,4 @@
+import { Ref } from 'vue'
 import { definitions } from '@/types/supabase'
 import type { RealtimeSubscription } from '@supabase/supabase-js'
 import { parseSchedule, parseDate, ParserConfig } from 'date-parrot'
@@ -43,11 +44,11 @@ export async function useTodos(subscribe = false, listId?: string) {
   }
 
   const dataKey = listId != null ? `todos:${listId}` : 'todos'
-  const filter =
+  const filter: ['list_id', 'eq' | 'is', string | null] =
     listId != null ? ['list_id', 'eq', listId] : ['list_id', 'is', null]
   const { data: todos, refresh } = await useAsyncData(dataKey, async () => {
     const { data } = await api
-      .from<definitions['todo']>('todo')
+      .from<Todo>('todo')
       .select('*')
       .filter(...filter)
       .order('id')
@@ -67,7 +68,11 @@ export async function useTodos(subscribe = false, listId?: string) {
       .subscribe()
   }
 
-  return { todos }
+  return {
+    todos,
+    deleteTodo: (todo: Todo) => deleteTodo(todo, todos),
+    toggleTodo: (todo: Todo) => toggleTodo(todo, todos),
+  }
 }
 
 export function useTodoForm(listId?: string) {
@@ -114,7 +119,7 @@ export function useTodoForm(listId?: string) {
       return
     }
 
-    const todo: Omit<definitions['todo'], 'id' | 'done'> = {
+    const todo: Omit<Todo, 'id' | 'done'> = {
       name: newTodo.value,
       user_id: user.id,
     }
@@ -147,7 +152,7 @@ export function useTodoForm(listId?: string) {
       return
     }
 
-    const { error } = await api.from<definitions['todo']>('todo').insert([todo])
+    const { error } = await api.from<Todo>('todo').insert([todo])
     if (error) {
       console.error(error)
     }
@@ -201,10 +206,9 @@ function getNextOccurance(todo: Todo): string {
   return formatISO(nextDate)
 }
 
-export async function toggleTodo(todo: Todo) {
+async function toggleTodo(todo: Todo, todos: Ref<Todo[]>) {
   const api = useSupabaseClient()
   const { done } = todo
-  const { todos } = await useTodos()
   const index = todos.value.findIndex(({ id }) => id === todo.id)
   todos.value[index].done = !done
 
@@ -212,7 +216,7 @@ export async function toggleTodo(todo: Todo) {
   if (todo.repeat_frequency && todo.due_date) {
     const nextDate = getNextOccurance(todo)
     const { error } = await api
-      .from<definitions['todo']>('todo')
+      .from<Todo>('todo')
       .update({ due_date: nextDate })
       .eq('id', todo.id)
     if (error) {
@@ -222,7 +226,7 @@ export async function toggleTodo(todo: Todo) {
   }
 
   const { error } = await api
-    .from<definitions['todo']>('todo')
+    .from<Todo>('todo')
     .update({ done: !done })
     .eq('id', todo.id)
   if (error) {
@@ -230,17 +234,13 @@ export async function toggleTodo(todo: Todo) {
   }
 }
 
-export async function deleteTodo(todo: Todo) {
+async function deleteTodo(todo: Todo, todos: Ref<Todo[]>) {
   const api = useSupabaseClient()
   const { id: oldId } = todo
-  const { todos } = await useTodos()
   const index = todos.value.findIndex(({ id }) => id === oldId)
   todos.value.splice(index, 1)
 
-  const { error } = await api
-    .from<definitions['todo']>('todo')
-    .delete()
-    .eq('id', oldId)
+  const { error } = await api.from<Todo>('todo').delete().eq('id', oldId)
   if (error) {
     console.error(error)
   }
