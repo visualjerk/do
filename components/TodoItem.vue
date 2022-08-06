@@ -38,14 +38,14 @@ function handleDelete(todo: Todo) {
 
 <template>
   <div
-    class="flex gap-3 items-center shadow-sm dark:shadow-slate-200/20"
+    class="flex gap-2 items-center shadow-sm dark:shadow-slate-200/20"
     :class="
       todo.done
         ? 'text-slate-300 bg-slate-50 dark:text-slate-500 dark:bg-slate-800'
         : 'text-slate-700 bg-white dark:text-slate-200 dark:bg-slate-800'
     "
   >
-    <label class="flex gap-3 p-3">
+    <label class="flex p-2 sm:p-3">
       <input
         type="checkbox"
         :checked="todo.done"
@@ -65,7 +65,7 @@ function handleDelete(todo: Todo) {
     </label>
     <div class="flex-grow py-2">
       <div class="">{{ todo.name }}</div>
-      <div class="flex items-center gap-2" v-if="todo.due_date">
+      <div class="flex items-center gap-2 mt-1" v-if="todo.due_date">
         <BaseTag :muted="todo.done">
           <mdicon
             size="12"
