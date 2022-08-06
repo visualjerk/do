@@ -32,7 +32,7 @@ useHead({
         </BaseItem>
       </li>
     </ul>
-    <h2 class="mb-4 sm:mb-8">Lists</h2>
+    <h2 class="mb-3">Lists</h2>
     <form @submit.prevent="addList" class="mb-6 relative">
       <div>
         <input
