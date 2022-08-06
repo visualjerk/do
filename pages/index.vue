@@ -34,14 +34,16 @@ const todosFuture = computed(() =>
     <h1 class="mb-4 sm:mb-8">Todos</h1>
     <form @submit.prevent="addTodo" class="mb-6 relative">
       <div>
-        <input
+        <textarea
           v-model="newTodo"
           placeholder="What needs to be done?"
           autofocus
-          class="p-3 pr-10 w-full text-lg bg-white text-white caret-slate-800 focus:outline-indigo-500 outline-none dark:bg-slate-800 dark:text-slate-800 dark:caret-slate-200 dark:focus:outline-teal-400"
+          autocomplete="off"
+          rows="1"
+          class="absolute inset-0 p-3 pr-12 w-full text-lg bg-white text-white caret-slate-800 focus:outline-indigo-500 outline-none dark:bg-slate-800 dark:text-slate-800 dark:caret-slate-200 dark:focus:outline-teal-400 resize-none"
         />
         <div
-          class="absolute inset-0 pointer-events-none p-3 pr-10 text-lg whitespace-pre text-slate-800 dark:text-slate-200"
+          class="relative pointer-events-none p-3 pr-12 text-lg whitespace-pre-wrap text-slate-800 dark:text-slate-200"
         >
           <template v-for="part in todoParts">
             <span
@@ -51,8 +53,8 @@ const todosFuture = computed(() =>
               {{ part.value }}
             </span>
             <span v-else>
-              {{ part.value }}
-            </span>
+              {{ part.value }} </span
+            >&nbsp;
           </template>
         </div>
       </div>
