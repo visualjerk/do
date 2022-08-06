@@ -135,6 +135,10 @@ export function useTodoForm() {
         .join('')
     }
 
+    if (!todo.name || todo.name.trim().length === 0) {
+      return
+    }
+
     const { error } = await api.from<definitions['todo']>('todo').insert([todo])
     if (error) {
       console.error(error)

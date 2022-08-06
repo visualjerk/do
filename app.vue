@@ -41,17 +41,9 @@ useHead({
         >
           <mdicon name="power" />
         </button>
-        <a
-          href="https://github.com/visualjerk/do"
-          class="px-2 py-1 text-slate-700 hover:text-indigo-600"
-          title="Open GitHub Repo"
-          target="_blank"
-        >
-          <mdicon name="github" />
-        </a>
       </nav>
     </header>
-    <main class="py-6 sm:py-10 px-2 sm:px-4 max-w-screen-md m-auto">
+    <main class="py-3 sm:py-10 px-2 sm:px-4 max-w-screen-md m-auto">
       <div v-if="!user">
         <h1 class="mb-8">Please login</h1>
         <button
@@ -68,13 +60,13 @@ useHead({
     <footer
       class="absolute inset-x-0 bottom-0 p-8 flex justify-center items-center gap-1 text-slate-500 text-xs"
     >
-      Built by
       <a
-        href="https://twitter.com/visual_jerk"
+        href="https://github.com/visualjerk/do"
         target="_blank"
-        class="inline-flex items-center"
+        class="p-1 hover:text-indigo-600"
+        title="Open GitHub Repo"
       >
-        <mdicon name="twitter" size="20" /> visualjerk
+        <mdicon name="github" size="20" />
       </a>
     </footer>
   </div>

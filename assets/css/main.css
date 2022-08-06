@@ -2,7 +2,7 @@
 
 @layer base {
   h1,.h1 {
-    @apply text-4xl sm:text-5xl text-indigo-600 font-extralight;
+    @apply text-3xl sm:text-5xl text-indigo-600 font-extralight;
   }
   h2,.h2 {
     @apply text-xl sm:text-2xl text-slate-800 font-bold;

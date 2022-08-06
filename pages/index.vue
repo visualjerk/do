@@ -31,7 +31,7 @@ const todosFuture = computed(() =>
 
 <template>
   <div>
-    <h1 class="mb-8">Todos</h1>
+    <h1 class="mb-4 sm:mb-8">Todos</h1>
     <form @submit.prevent="addTodo" class="mb-6 relative">
       <div>
         <input
