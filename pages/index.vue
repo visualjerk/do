@@ -1,89 +1,38 @@
 <script lang="ts" setup>
-import { useTodos, useTodoForm } from '@/store/todos'
-import { isToday, isPast, isFuture, parseISO } from 'date-fns'
+import { useLists, useListForm } from '@/store/lists'
 
-const { todos } = await useTodos(true)
-const { newTodo, todoParts, addTodo } = useTodoForm()
+const { lists } = await useLists(true)
+const { newList, addList } = useListForm()
 
 useHead({
   title: 'Do',
 })
-
-const todosToday = computed(() =>
-  todos.value.filter(({ due_date }) => {
-    if (!due_date) {
-      return true
-    }
-    const date = parseISO(due_date)
-    return isToday(date) || isPast(date)
-  })
-)
-const todosFuture = computed(() =>
-  todos.value.filter(({ due_date }) => {
-    if (!due_date) {
-      return false
-    }
-    const date = parseISO(due_date)
-    return !isToday(date) && isFuture(date)
-  })
-)
 </script>
 
 <template>
   <div>
-    <h1 class="mb-4 sm:mb-8">Todos</h1>
-    <form @submit.prevent="addTodo" class="mb-6 relative">
-      <div>
-        <textarea
-          v-model="newTodo"
-          placeholder="What needs to be done?"
-          autofocus
-          autocomplete="off"
-          rows="1"
-          class="absolute inset-0 p-3 pr-12 w-full text-lg bg-white text-white caret-slate-800 focus:outline-indigo-500 outline-none dark:bg-slate-800 dark:text-slate-800 dark:caret-slate-200 dark:focus:outline-teal-400 resize-none"
-        />
-        <div
-          class="relative pointer-events-none p-3 pr-12 text-lg whitespace-pre-wrap text-slate-800 dark:text-slate-100"
-        >
-          <template v-for="part in todoParts">
-            <span
-              v-if="part.isSchedule || part.isDate"
-              class="text-indigo-600 dark:text-teal-400"
-            >
-              {{ part.value }}
-            </span>
-            <span v-else> {{ part.value }} </span> </template
-          >&nbsp;
-        </div>
-      </div>
-      <button
-        type="submit"
-        class="absolute inset-y-0 right-0 px-3 text-indigo-500 hover:text-indigo-600 dark:text-teal-400 dark:hover:text-teal-500"
-      >
-        <mdicon name="plus" />
-      </button>
-    </form>
-    <h2 class="mb-3">Today</h2>
-    <ul v-auto-animate class="mb-8">
-      <li
-        v-for="todo in todosToday"
-        :key="todo.id"
-        class="mt-2 first-of-type:mt-0"
-      >
-        <TodoItem :todo="todo" />
+    <h1 class="mb-4 sm:mb-8">Todo</h1>
+    <ul class="mb-8">
+      <li>
+        <BaseItem to="/inbox">Inbox</BaseItem>
       </li>
     </ul>
-    <div v-if="todosFuture.length > 0">
-      <h2 class="mb-3">Upcoming</h2>
-      <ul v-auto-animate>
-        <li
-          v-for="todo in todosFuture"
-          :key="todo.id"
-          class="mt-2 first-of-type:mt-0"
-        >
-          <TodoItem :todo="todo" />
-        </li>
-      </ul>
-    </div>
+    <h2 class="mb-4 sm:mb-8">Lists</h2>
+    <form @submit.prevent="addList" class="mb-6 relative">
+      <div>
+        <input
+          v-model="newList"
+          placeholder="Create a new list"
+          autocomplete="off"
+          class="p-3 pr-12 w-full text-lg bg-white text-slate-800 focus:outline-indigo-500 outline-none dark:bg-slate-800 dark:text-slate-100 dark:focus:outline-teal-400 resize-none"
+        />
+      </div>
+      <AddButton type="submit" />
+    </form>
+    <ul v-auto-animate class="mb-8">
+      <li v-for="list in lists" :key="list.id" class="mt-2">
+        <ListItem :list="list" />
+      </li>
+    </ul>
   </div>
 </template>

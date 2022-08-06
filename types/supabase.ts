@@ -12,6 +12,102 @@ export interface paths {
       };
     };
   };
+  "/list": {
+    get: {
+      parameters: {
+        query: {
+          id?: parameters["rowFilter.list.id"];
+          created_at?: parameters["rowFilter.list.created_at"];
+          user_id?: parameters["rowFilter.list.user_id"];
+          name?: parameters["rowFilter.list.name"];
+          /** Filtering Columns */
+          select?: parameters["select"];
+          /** Ordering */
+          order?: parameters["order"];
+          /** Limiting and Pagination */
+          offset?: parameters["offset"];
+          /** Limiting and Pagination */
+          limit?: parameters["limit"];
+        };
+        header: {
+          /** Limiting and Pagination */
+          Range?: parameters["range"];
+          /** Limiting and Pagination */
+          "Range-Unit"?: parameters["rangeUnit"];
+          /** Preference */
+          Prefer?: parameters["preferCount"];
+        };
+      };
+      responses: {
+        /** OK */
+        200: {
+          schema: definitions["list"][];
+        };
+        /** Partial Content */
+        206: unknown;
+      };
+    };
+    post: {
+      parameters: {
+        body: {
+          /** list */
+          list?: definitions["list"];
+        };
+        query: {
+          /** Filtering Columns */
+          select?: parameters["select"];
+        };
+        header: {
+          /** Preference */
+          Prefer?: parameters["preferReturn"];
+        };
+      };
+      responses: {
+        /** Created */
+        201: unknown;
+      };
+    };
+    delete: {
+      parameters: {
+        query: {
+          id?: parameters["rowFilter.list.id"];
+          created_at?: parameters["rowFilter.list.created_at"];
+          user_id?: parameters["rowFilter.list.user_id"];
+          name?: parameters["rowFilter.list.name"];
+        };
+        header: {
+          /** Preference */
+          Prefer?: parameters["preferReturn"];
+        };
+      };
+      responses: {
+        /** No Content */
+        204: never;
+      };
+    };
+    patch: {
+      parameters: {
+        query: {
+          id?: parameters["rowFilter.list.id"];
+          created_at?: parameters["rowFilter.list.created_at"];
+          user_id?: parameters["rowFilter.list.user_id"];
+          name?: parameters["rowFilter.list.name"];
+        };
+        body: {
+          /** list */
+          list?: definitions["list"];
+        };
+        header: {
+          /** Preference */
+          Prefer?: parameters["preferReturn"];
+        };
+      };
+      responses: {
+        /** No Content */
+        204: never;
+      };
+    };
+  };
   "/todo": {
     get: {
       parameters: {
@@ -27,6 +123,7 @@ export interface paths {
           by_month?: parameters["rowFilter.todo.by_month"];
           by_month_day?: parameters["rowFilter.todo.by_month_day"];
           by_time?: parameters["rowFilter.todo.by_time"];
+          list_id?: parameters["rowFilter.todo.list_id"];
           /** Filtering Columns */
           select?: parameters["select"];
           /** Ordering */
@@ -88,6 +185,7 @@ export interface paths {
           by_month?: parameters["rowFilter.todo.by_month"];
           by_month_day?: parameters["rowFilter.todo.by_month_day"];
           by_time?: parameters["rowFilter.todo.by_time"];
+          list_id?: parameters["rowFilter.todo.list_id"];
         };
         header: {
           /** Preference */
@@ -113,6 +211,7 @@ export interface paths {
           by_month?: parameters["rowFilter.todo.by_month"];
           by_month_day?: parameters["rowFilter.todo.by_month_day"];
           by_time?: parameters["rowFilter.todo.by_time"];
+          list_id?: parameters["rowFilter.todo.list_id"];
         };
         body: {
           /** todo */
@@ -132,6 +231,23 @@ export interface paths {
 }
 
 export interface definitions {
+  list: {
+    /**
+     * Format: bigint
+     * @description Note:
+     * This is a Primary Key.<pk/>
+     */
+    id: number;
+    /**
+     * Format: timestamp with time zone
+     * @default now()
+     */
+    created_at?: string;
+    /** Format: uuid */
+    user_id: string;
+    /** Format: text */
+    name: string;
+  };
   todo: {
     /**
      * Format: bigint
@@ -165,6 +281,12 @@ export interface definitions {
     by_month_day?: number;
     /** Format: time with time zone */
     by_time?: string;
+    /**
+     * Format: bigint
+     * @description Note:
+     * This is a Foreign Key to `list.id`.<fk table='list' column='id'/>
+     */
+    list_id?: number;
   };
 }
 
@@ -201,6 +323,16 @@ export interface parameters {
   offset: string;
   /** @description Limiting and Pagination */
   limit: string;
+  /** @description list */
+  "body.list": definitions["list"];
+  /** Format: bigint */
+  "rowFilter.list.id": string;
+  /** Format: timestamp with time zone */
+  "rowFilter.list.created_at": string;
+  /** Format: uuid */
+  "rowFilter.list.user_id": string;
+  /** Format: text */
+  "rowFilter.list.name": string;
   /** @description todo */
   "body.todo": definitions["todo"];
   /** Format: bigint */
@@ -225,6 +357,8 @@ export interface parameters {
   "rowFilter.todo.by_month_day": string;
   /** Format: time with time zone */
   "rowFilter.todo.by_time": string;
+  /** Format: bigint */
+  "rowFilter.todo.list_id": string;
 }
 
 export interface operations {}

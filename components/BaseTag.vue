@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineProps<{
-  muted: boolean
+  muted?: boolean
 }>()
 </script>
 

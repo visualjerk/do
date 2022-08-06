@@ -30,7 +30,7 @@ interface InputPart {
   isDate?: boolean
 }
 
-export async function useTodos(subscribe = false) {
+export async function useTodos(subscribe = false, listId?: string) {
   const api = useSupabaseClient()
   let subscription: RealtimeSubscription | undefined
 
@@ -42,10 +42,14 @@ export async function useTodos(subscribe = false) {
     })
   }
 
-  const { data: todos, refresh } = await useAsyncData('todos', async () => {
+  const dataKey = listId != null ? `todos:${listId}` : 'todos'
+  const filter =
+    listId != null ? ['list_id', 'eq', listId] : ['list_id', 'is', null]
+  const { data: todos, refresh } = await useAsyncData(dataKey, async () => {
     const { data } = await api
       .from<definitions['todo']>('todo')
       .select('*')
+      .filter(...filter)
       .order('id')
 
     if (!data) {
@@ -66,7 +70,7 @@ export async function useTodos(subscribe = false) {
   return { todos }
 }
 
-export function useTodoForm() {
+export function useTodoForm(listId?: string) {
   const newTodo = ref('')
 
   const todoParts = computed(() => {
@@ -113,6 +117,10 @@ export function useTodoForm() {
     const todo: Omit<definitions['todo'], 'id' | 'done'> = {
       name: newTodo.value,
       user_id: user.id,
+    }
+
+    if (listId != null) {
+      todo.list_id = parseInt(listId)
     }
     const schedule = parseSchedule(todo.name, dateParrotConfig)
     const date = parseDate(todo.name, dateParrotConfig)
