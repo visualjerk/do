@@ -52,10 +52,8 @@ const todosFuture = computed(() =>
             >
               {{ part.value }}
             </span>
-            <span v-else>
-              {{ part.value }} </span
-            >&nbsp;
-          </template>
+            <span v-else> {{ part.value }} </span> </template
+          >&nbsp;
         </div>
       </div>
       <button
