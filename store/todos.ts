@@ -13,6 +13,7 @@ import {
   setMinutes,
   setSeconds,
   setDay,
+  parseISO,
 } from 'date-fns'
 
 const dateParrotConfig: ParserConfig = {
@@ -175,7 +176,12 @@ function getNextOccurance(todo: Todo): string {
   if (!repeat_frequency || !due_date) {
     throw new Error('Todo has no repeat_frequency or due_date')
   }
-  let nextDate = new Date()
+
+  const dueDate = parseISO(due_date)
+  let nextDate = isPast(dueDate) ? new Date() : dueDate
+
+  const duration = parseISODuration(repeat_frequency)
+  nextDate = add(nextDate, duration)
 
   if (by_day != null) {
     nextDate = setDay(nextDate, by_day)
@@ -195,9 +201,6 @@ function getNextOccurance(todo: Todo): string {
     nextDate = setMinutes(nextDate, parseInt(minutes))
     nextDate = setSeconds(nextDate, parseInt(seconds))
   }
-
-  const duration = parseISODuration(repeat_frequency)
-  nextDate = add(nextDate, duration)
 
   while (isPast(nextDate)) {
     nextDate = add(nextDate, duration)
