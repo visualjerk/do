@@ -52,7 +52,7 @@ export async function useTodos(subscribe = false, listId?: string) {
       .from<Todo>('todo')
       .select('*')
       .filter(...filter)
-      .order('id')
+      .order('rank')
 
     if (!data) {
       return []
@@ -120,9 +120,14 @@ export function useTodoForm(listId?: string) {
       return
     }
 
+    const { todos } = await useTodos(false, listId)
+    const nextRank =
+      todos.value?.length > 1 ? todos.value[todos.value.length - 1].rank + 1 : 1
+
     const todo: Omit<Todo, 'id' | 'done'> = {
       name: newTodo.value,
       user_id: user.id,
+      rank: nextRank,
     }
 
     if (listId != null) {

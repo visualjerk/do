@@ -124,6 +124,7 @@ export interface paths {
           by_month_day?: parameters["rowFilter.todo.by_month_day"];
           by_time?: parameters["rowFilter.todo.by_time"];
           list_id?: parameters["rowFilter.todo.list_id"];
+          rank?: parameters["rowFilter.todo.rank"];
           /** Filtering Columns */
           select?: parameters["select"];
           /** Ordering */
@@ -186,6 +187,7 @@ export interface paths {
           by_month_day?: parameters["rowFilter.todo.by_month_day"];
           by_time?: parameters["rowFilter.todo.by_time"];
           list_id?: parameters["rowFilter.todo.list_id"];
+          rank?: parameters["rowFilter.todo.rank"];
         };
         header: {
           /** Preference */
@@ -212,6 +214,7 @@ export interface paths {
           by_month_day?: parameters["rowFilter.todo.by_month_day"];
           by_time?: parameters["rowFilter.todo.by_time"];
           list_id?: parameters["rowFilter.todo.list_id"];
+          rank?: parameters["rowFilter.todo.rank"];
         };
         body: {
           /** todo */
@@ -287,6 +290,8 @@ export interface definitions {
      * This is a Foreign Key to `list.id`.<fk table='list' column='id'/>
      */
     list_id?: number;
+    /** Format: double precision */
+    rank: number;
   };
 }
 
@@ -359,6 +364,8 @@ export interface parameters {
   "rowFilter.todo.by_time": string;
   /** Format: bigint */
   "rowFilter.todo.list_id": string;
+  /** Format: double precision */
+  "rowFilter.todo.rank": string;
 }
 
 export interface operations {}
