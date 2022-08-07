@@ -5,7 +5,6 @@ import { parseSchedule, parseDate, ParserConfig } from 'date-parrot'
 import { Duration } from 'luxon'
 import {
   add,
-  parseISO,
   formatISO,
   isPast,
   setDate,
@@ -13,6 +12,7 @@ import {
   setHours,
   setMinutes,
   setSeconds,
+  setDay,
 } from 'date-fns'
 
 const dateParrotConfig: ParserConfig = {
@@ -162,6 +162,7 @@ export function useTodoForm(listId?: string) {
   return { newTodo, todoParts, addTodo }
 }
 
+// TODO: test this
 function getNextOccurance(todo: Todo): string {
   const {
     repeat_frequency,
@@ -174,11 +175,10 @@ function getNextOccurance(todo: Todo): string {
   if (!repeat_frequency || !due_date) {
     throw new Error('Todo has no repeat_frequency or due_date')
   }
-  const duration = parseISODuration(repeat_frequency)
-  let nextDate = add(parseISO(due_date), duration)
+  let nextDate = new Date()
 
   if (by_day != null) {
-    nextDate = setDate(nextDate, by_day)
+    nextDate = setDay(nextDate, by_day)
   }
 
   if (by_month != null) {
@@ -196,11 +196,11 @@ function getNextOccurance(todo: Todo): string {
     nextDate = setSeconds(nextDate, parseInt(seconds))
   }
 
-  if (isPast(nextDate)) {
-    return getNextOccurance({
-      ...todo,
-      due_date: formatISO(nextDate),
-    })
+  const duration = parseISODuration(repeat_frequency)
+  nextDate = add(nextDate, duration)
+
+  while (isPast(nextDate)) {
+    nextDate = add(nextDate, duration)
   }
 
   return formatISO(nextDate)

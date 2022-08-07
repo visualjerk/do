@@ -18,6 +18,7 @@
     "@formkit/auto-animate": "^1.0.0-beta.1",
     "@mdi/js": "^7.0.96",
     "@supabase/supabase-js": "^1.35.4",
+    "@vueuse/core": "^9.1.0",
     "date-fns": "^2.29.1",
     "date-parrot": "^0.0.23",
     "luxon": "^3.0.1",

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useEventListener } from '@vueuse/core'
 import { useUser, login, logout } from '@/store/auth'
 
 const { user } = await useUser()
@@ -6,6 +7,14 @@ const { user } = await useUser()
 useHead({
   title: 'Do',
 })
+
+if (process.client) {
+  useEventListener(document, 'visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      refreshNuxtData()
+    }
+  })
+}
 </script>
 
 <template>
