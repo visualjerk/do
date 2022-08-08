@@ -2,11 +2,16 @@
 import { useTodos, useTodoForm, Todo } from '@/store/todos'
 import { isToday, isPast, isFuture, parseISO } from 'date-fns'
 
+import Draggable from 'vuedraggable'
+
 const props = defineProps<{
   id?: string
 }>()
 
-const { todos, deleteTodo, toggleTodo } = await useTodos(true, props.id)
+const { todos, deleteTodo, toggleTodo, moveTodo } = await useTodos(
+  true,
+  props.id
+)
 const { newTodo, todoParts, addTodo } = useTodoForm(props.id)
 
 const todosToday = computed(() =>
@@ -34,6 +39,10 @@ function handleDelete(todo: Todo) {
     return
   }
   deleteTodo(todo)
+}
+
+function handleMove(event) {
+  console.log('handle move', event)
 }
 </script>
 
@@ -67,6 +76,24 @@ function handleDelete(todo: Todo) {
       <AddButton type="submit" />
     </form>
     <h2 class="mb-3">Today</h2>
+    <draggable
+      tag="ul"
+      class="mb-8"
+      :model-value="todosToday"
+      @update:model-value="handleMove"
+      item-key="id"
+    >
+      <template #item="{ element: todo }">
+        <li class="mt-2 first-of-type:mt-0">
+          <TodoItem
+            :todo="todo"
+            @delete="() => handleDelete(todo)"
+            @toggle="() => toggleTodo(todo)"
+          />
+        </li>
+      </template>
+    </draggable>
+
     <ul v-auto-animate class="mb-8">
       <li
         v-for="todo in todosToday"

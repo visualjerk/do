@@ -22,6 +22,7 @@
     "date-fns": "^2.29.1",
     "date-parrot": "^0.0.23",
     "luxon": "^3.0.1",
-    "mdi-vue": "^3.0.13"
+    "mdi-vue": "^3.0.13",
+    "vuedraggable": "^4.1.0"
   }
 }
