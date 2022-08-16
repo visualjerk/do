@@ -256,7 +256,7 @@ async function deleteTodo(todo: Todo, todos: Ref<Todo[]>) {
   }
 }
 
-export function getTodoIndex(todo: Todo, todos: Todo[]) {
+function getTodoIndex(todo: Todo, todos: Todo[]) {
   return todos.findIndex(({ id }) => id === todo.id)
 }
 

@@ -1,8 +1,24 @@
 <script lang="ts" setup>
-import { useTodos, useTodoForm, Todo, getTodoIndex } from '@/store/todos'
+import { useTodos, useTodoForm, Todo } from '@/store/todos'
 import { isToday, isPast, isFuture, parseISO } from 'date-fns'
 
 import Draggable from 'vuedraggable'
+
+interface DraggableChangeEvent {
+  added?: {
+    newIndex: number
+    element: Todo
+  }
+  removed?: {
+    oldIndex: number
+    element: Todo
+  }
+  moved?: {
+    newIndex: number
+    oldIndex: number
+    element: Todo
+  }
+}
 
 const props = defineProps<{
   id?: string
@@ -45,21 +61,7 @@ const movedTodos = ref<Todo[]>([])
 function handleMove(todos: Todo[]) {
   movedTodos.value = todos
 }
-interface DraggableChangeEvent {
-  added?: {
-    newIndex: number
-    element: Todo
-  }
-  removed?: {
-    oldIndex: number
-    element: Todo
-  }
-  moved?: {
-    newIndex: number
-    oldIndex: number
-    element: Todo
-  }
-}
+
 function handleChange(event: DraggableChangeEvent) {
   const moved = event.moved
   if (!moved) {
@@ -125,19 +127,24 @@ function handleChange(event: DraggableChangeEvent) {
     </draggable>
     <div v-if="todosFuture.length > 0">
       <h2 class="mb-3">Upcoming</h2>
-      <ul v-auto-animate>
-        <li
-          v-for="todo in todosFuture"
-          :key="todo.id"
-          class="mt-2 first-of-type:mt-0"
-        >
-          <TodoItem
-            :todo="todo"
-            @delete="() => handleDelete(todo)"
-            @toggle="() => toggleTodo(todo)"
-          />
-        </li>
-      </ul>
+      <draggable
+        tag="ul"
+        class="mb-8"
+        :model-value="todosFuture"
+        @update:model-value="handleMove"
+        @change="handleChange"
+        item-key="id"
+      >
+        <template #item="{ element: todo }">
+          <li class="mt-2 first-of-type:mt-0">
+            <TodoItem
+              :todo="todo"
+              @delete="() => handleDelete(todo)"
+              @toggle="() => toggleTodo(todo)"
+            />
+          </li>
+        </template>
+      </draggable>
     </div>
   </div>
 </template>
