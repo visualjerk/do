@@ -114,6 +114,7 @@ function handleChange(event: DraggableChangeEvent) {
       @update:model-value="handleMove"
       @change="handleChange"
       item-key="id"
+      handle=".drag-handle"
     >
       <template #item="{ element: todo }">
         <li class="mt-2 first-of-type:mt-0">
@@ -134,6 +135,7 @@ function handleChange(event: DraggableChangeEvent) {
         @update:model-value="handleMove"
         @change="handleChange"
         item-key="id"
+        handle=".drag-handle"
       >
         <template #item="{ element: todo }">
           <li class="mt-2 first-of-type:mt-0">

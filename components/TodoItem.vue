@@ -70,6 +70,7 @@ function formatDate(dateISO: string) {
     </div>
     <template #post>
       <DeleteButton @click="$emit('delete')" />
+      <DragButton />
     </template>
   </BaseItem>
 </template>
