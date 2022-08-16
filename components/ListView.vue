@@ -2,11 +2,32 @@
 import { useTodos, useTodoForm, Todo } from '@/store/todos'
 import { isToday, isPast, isFuture, parseISO } from 'date-fns'
 
+import Draggable from 'vuedraggable'
+
+interface DraggableChangeEvent {
+  added?: {
+    newIndex: number
+    element: Todo
+  }
+  removed?: {
+    oldIndex: number
+    element: Todo
+  }
+  moved?: {
+    newIndex: number
+    oldIndex: number
+    element: Todo
+  }
+}
+
 const props = defineProps<{
   id?: string
 }>()
 
-const { todos, deleteTodo, toggleTodo } = await useTodos(true, props.id)
+const { todos, deleteTodo, toggleTodo, moveTodo } = await useTodos(
+  true,
+  props.id
+)
 const { newTodo, todoParts, addTodo } = useTodoForm(props.id)
 
 const todosToday = computed(() =>
@@ -34,6 +55,25 @@ function handleDelete(todo: Todo) {
     return
   }
   deleteTodo(todo)
+}
+
+const movedTodos = ref<Todo[]>([])
+function handleMove(todos: Todo[]) {
+  movedTodos.value = todos
+}
+
+function handleChange(event: DraggableChangeEvent) {
+  const moved = event.moved
+  if (!moved) {
+    return
+  }
+  const { element: movedTodo, newIndex } = moved
+  const leadingIndex = newIndex - 1
+  const leadingTodo = movedTodos.value[leadingIndex]
+  const trailingIndex = newIndex + 1
+  const trailingTodo = movedTodos.value[trailingIndex]
+  moveTodo(movedTodo, leadingTodo, trailingTodo)
+  movedTodos.value = []
 }
 </script>
 
@@ -67,34 +107,44 @@ function handleDelete(todo: Todo) {
       <AddButton type="submit" />
     </form>
     <h2 class="mb-3">Today</h2>
-    <ul v-auto-animate class="mb-8">
-      <li
-        v-for="todo in todosToday"
-        :key="todo.id"
-        class="mt-2 first-of-type:mt-0"
-      >
-        <TodoItem
-          :todo="todo"
-          @delete="() => handleDelete(todo)"
-          @toggle="() => toggleTodo(todo)"
-        />
-      </li>
-    </ul>
-    <div v-if="todosFuture.length > 0">
-      <h2 class="mb-3">Upcoming</h2>
-      <ul v-auto-animate>
-        <li
-          v-for="todo in todosFuture"
-          :key="todo.id"
-          class="mt-2 first-of-type:mt-0"
-        >
+    <draggable
+      tag="ul"
+      class="mb-8"
+      :model-value="todosToday"
+      @update:model-value="handleMove"
+      @change="handleChange"
+      item-key="id"
+    >
+      <template #item="{ element: todo }">
+        <li class="mt-2 first-of-type:mt-0">
           <TodoItem
             :todo="todo"
             @delete="() => handleDelete(todo)"
             @toggle="() => toggleTodo(todo)"
           />
         </li>
-      </ul>
+      </template>
+    </draggable>
+    <div v-if="todosFuture.length > 0">
+      <h2 class="mb-3">Upcoming</h2>
+      <draggable
+        tag="ul"
+        class="mb-8"
+        :model-value="todosFuture"
+        @update:model-value="handleMove"
+        @change="handleChange"
+        item-key="id"
+      >
+        <template #item="{ element: todo }">
+          <li class="mt-2 first-of-type:mt-0">
+            <TodoItem
+              :todo="todo"
+              @delete="() => handleDelete(todo)"
+              @toggle="() => toggleTodo(todo)"
+            />
+          </li>
+        </template>
+      </draggable>
     </div>
   </div>
 </template>

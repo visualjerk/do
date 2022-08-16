@@ -73,6 +73,8 @@ export async function useTodos(subscribe = false, listId?: string) {
     todos,
     deleteTodo: (todo: Todo) => deleteTodo(todo, todos),
     toggleTodo: (todo: Todo) => toggleTodo(todo, todos),
+    moveTodo: (todo: Todo, leadingTodo?: Todo, trailingTodo?: Todo) =>
+      moveTodo(todo, todos, leadingTodo, trailingTodo),
   }
 }
 
@@ -249,6 +251,51 @@ async function deleteTodo(todo: Todo, todos: Ref<Todo[]>) {
   todos.value.splice(index, 1)
 
   const { error } = await api.from<Todo>('todo').delete().eq('id', oldId)
+  if (error) {
+    console.error(error)
+  }
+}
+
+function getTodoIndex(todo: Todo, todos: Todo[]) {
+  return todos.findIndex(({ id }) => id === todo.id)
+}
+
+async function moveTodo(
+  todo: Todo,
+  todos: Ref<Todo[]>,
+  leadingTodo?: Todo,
+  trailingTodo?: Todo
+) {
+  const api = useSupabaseClient()
+  const index = getTodoIndex(todo, todos.value)
+
+  if (!leadingTodo && !trailingTodo) {
+    return
+  }
+
+  // Remove from current position
+  todos.value.splice(index, 1)
+
+  let newRank = 0
+
+  // Add to new position
+  if (leadingTodo && trailingTodo) {
+    const newIndex = getTodoIndex(trailingTodo, todos.value)
+    newRank = (leadingTodo.rank + trailingTodo.rank) / 2
+    todos.value.splice(newIndex, 0, todo)
+  } else if (leadingTodo) {
+    newRank = leadingTodo.rank + 1
+    todos.value.push(todo)
+  } else if (trailingTodo) {
+    newRank = trailingTodo.rank / 2
+    todos.value.unshift(todo)
+  }
+
+  // Update rank
+  const { error } = await api
+    .from<Todo>('todo')
+    .update({ rank: newRank })
+    .eq('id', todo.id)
   if (error) {
     console.error(error)
   }
